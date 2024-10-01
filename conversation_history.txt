@@ -1,3 +1,15 @@
 Command: open youtube
 Response: Opening youtube
 
+Command: what is my name
+Response: None
+
+Command: who is your creator
+Response: None
+
+Command: open youtube
+Response: Opening youtube
+
+Command: who is your creator
+Response: None
+

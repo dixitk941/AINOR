@@ -14,24 +14,21 @@ from AINOR.features import note
 from AINOR.features import system_stats
 from AINOR.features import loc
 
-
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 engine.setProperty('voices', voices[0].id)
 
 class AINORAssistant:
     def __init__(self):
-        pass
+        self.memory = {}
 
     def mic_input(self):
         """
-        Fetch input from mic
-        return: user's voice input as text if true, false if fail
+        Fetch input from mic or fallback to text input if mic input fails.
+        return: user's voice or text input as text if true, False if fail
         """
         try:
             r = sr.Recognizer()
-            # r.pause_threshold = 1
-            # r.adjust_for_ambient_noise(source, duration=1)
             with sr.Microphone() as source:
                 print("Listening....")
                 r.energy_threshold = 4000
@@ -40,14 +37,20 @@ class AINORAssistant:
                 print("Recognizing...")
                 command = r.recognize_google(audio, language='en-in').lower()
                 print(f'You said: {command}')
-            except:
-                print('Please try again')
-                command = self.mic_input()
-            return command
+                return command
+            except sr.UnknownValueError:
+                print("Could not understand audio. Would you like to type your command instead? (yes/no)")
+                if input().strip().lower() == 'yes':
+                    return input("Type your command: ")
+                else:
+                    print("Please try again.")
+                    return self.mic_input()
+            except sr.RequestError as e:
+                print(f"Could not request results from Google Speech Recognition service; {e}")
+                return False
         except Exception as e:
-            print(e)
-            return  False
-
+            print(f"Error: {e}")
+            return False
 
     def tts(self, text):
         """
@@ -66,11 +69,9 @@ class AINORAssistant:
             return False
 
     def tell_me_date(self):
-
         return date_time.date()
 
     def tell_time(self):
-
         return date_time.time()
 
     def launch_any_app(self, path_of_app):
@@ -88,7 +89,6 @@ class AINORAssistant:
         :return: True if success, False if fail
         """
         return website_open.website_opener(domain)
-
 
     def weather(self, city):
         """
@@ -119,13 +119,11 @@ class AINORAssistant:
         return news.get_news()
     
     def send_mail(self, sender_email, sender_password, receiver_email, msg):
-
         return send_email.mail(sender_email, sender_password, receiver_email, msg)
 
     def google_calendar_events(self, text):
         service = google_calendar.authenticate_google()
         date = google_calendar.get_date(text) 
-        
         if date:
             return google_calendar.get_events(date, service)
         else:
@@ -147,3 +145,31 @@ class AINORAssistant:
     def my_location(self):
         city, state, country = loc.my_location()
         return city, state, country
+
+    def add_to_memory(self, command):
+        """
+        Adds an unknown command to memory after confirming with the user.
+        :param command: str - The command that is unknown.
+        """
+        print("I don't recognize that command. Would you like to add it to memory? (yes/no)")
+        if input().strip().lower() == 'yes':
+            answer = input("What should I remember as the answer? (type 'google' to search for it): ")
+            if answer.strip().lower() == 'google':
+                query = command
+                # Implement Google search to fetch answer (placeholder logic)
+                answer = "This is a placeholder for the answer fetched from Google."
+            # Store the command and answer in memory
+            self.memory[command] = answer
+            print(f"Stored command '{command}' with answer '{answer}' in memory.")
+        else:
+            print("Command not added to memory.")
+
+# Example Usage
+if __name__ == "__main__":
+    assistant = AINORAssistant()
+    while True:
+        command = assistant.mic_input()
+        if command:
+            # Here you can add command processing logic based on recognized commands.
+            # If the command is not recognized:
+            assistant.add_to_memory(command)
