@@ -62,28 +62,6 @@ def computational_intelligence(question):
         speak("Sorry sir I couldn't fetch your question's answer. Please try again ")
         return None
     
-def startup():
-    speak("Initializing AINOR")
-    speak("Starting all systems applications")
-    speak("Installing and checking all drivers")
-    speak("Caliberating and examining all the core processors")
-    speak("Checking the internet connection")
-    speak("Wait a moment sir")
-    speak("All drivers are up and running")
-    speak("All systems have been activated")
-    speak("Now I am online")
-    hour = int(datetime.datetime.now().hour)
-    if hour>=0 and hour<=12:
-        speak("Good Morning")
-    elif hour>12 and hour<18:
-        speak("Good afternoon")
-    else:
-        speak("Good evening")
-    c_time = obj.tell_time()
-    speak(f"Currently it is {c_time}")
-    speak("I am AINOR. Online and ready sir. Please tell me how may I help you")
-    
-
 
 
 def wish():
@@ -108,7 +86,7 @@ class MainThread(QThread):
         self.TaskExecution()
 
     def TaskExecution(self):
-        startup()
+        # startup()
         wish()
 
         while True:
@@ -126,7 +104,7 @@ class MainThread(QThread):
 
             elif re.search('launch', command):
                 dict_app = {
-                    'chrome': 'C:/Program Files/Google/Chrome/Application/chrome'
+                    'firefox': "C://Program Files//Mozilla Firefox//firefox.exe"
                 }
 
                 app = command.split(' ', 1)[1]
@@ -180,7 +158,7 @@ class MainThread(QThread):
                 obj.search_anything_google(command)
             
             elif "play music" in command or "hit some music" in command:
-                music_dir = "F://Songs//Imagine_Dragons"
+                music_dir = "C://Users//AINOR//Music"
                 songs = os.listdir(music_dir)
                 for song in songs:
                     os.startfile(os.path.join(music_dir, song))
@@ -306,7 +284,7 @@ class MainThread(QThread):
 
             elif "show me the screenshot" in command:
                 try:
-                    img = Image.open('D://AINOR//AINOR_2.0//' + name)
+                    img = Image.open('c://AINOR//AINOR_2.0//' + name)
                     img.show(img)
                     speak("Here it is sir")
                     time.sleep(2)
