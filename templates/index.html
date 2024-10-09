@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.I.N.O.R - Voice Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #command {
+            width: 300px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        #buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #1f1f1f;
+            color: #ffffff;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #3a3a3a;
+        }
+
+        #response {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #1f1f1f;
+            width: 300px;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <h1>A.I.N.O.R Voice Assistant</h1>
+    <input type="text" id="command" placeholder="Enter your command...">
+    <div id="buttons">
+        <button id="submit">Send Command</button>
+        <button id="mic" onclick="startMic()">🎤 Start Microphone</button>
+    </div>
+    <div id="response"></div>
+
+    <script>
+        document.getElementById('submit').onclick = function() {
+            var command = document.getElementById('command').value;
+            processCommand(command);
+        };
+
+        function processCommand(command) {
+            fetch('/process_command', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ command: command })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response').innerText = data.response;
+                document.getElementById('command').value = ''; // Clear input
+            });
+        }
+
+        function startMic() {
+            // Here you would integrate a microphone listening functionality
+            alert('Microphone function to be implemented.');
+        }
+    </script>
+</body>
+</html>
