@@ -1,28 +1,53 @@
 {
-  "greetings": {
-    "hello": ["Hello there!", "Hi!", "Greetings!", "Howdy!", "Namaste!"],
-    "how_are_you": ["I'm doing great, thanks for asking!", "All systems are operational!", "I am here and ready!", "Feeling awesome, how about you?"]
-  },
-  "farewell": ["Goodbye!", "See you later!", "Going offline.", "Take care!"],
-  "time": ["It's {time}.", "The time is currently {time}.", "Right now, it's {time}."],
-  "date": ["Today's date is {date}.", "The current date is {date}.", "It's {date} today."],
-  "weather": ["The weather in {location} is {weather} with a temperature of {temp} degrees.", "It's currently {weather} in {location} with {temp} degrees."],
-  "reminder_set": ["Reminder set for {reminder_time}.", "Got it! I've set your reminder for {reminder_time}."],
-  "reminder_get": ["Here's your reminder: {reminder_message}", "You asked me to remind you about: {reminder_message}"],
-  "news": ["Here are the top news headlines:", "I've found these headlines for you:"],
-  "jokes": ["Why don't scientists trust atoms? Because they make up everything!", "What do you call fake spaghetti? An impasta!", "I told my computer I needed a break, and now it won't stop sending me KitKats."],
-  "task_management": {
-    "create_task": ["Task '{task}' has been added to your to-do list.", "I've added '{task}' to your task list.", "Task '{task}' is now in your list."],
-    "show_tasks": ["Here are your tasks for today: {tasks}.", "You have the following tasks: {tasks}."]
-  },
-  "smart_home": {
-    "lights_on": ["Turning on the lights.", "I've switched on the lights for you.", "The lights are now on."],
-    "lights_off": ["Turning off the lights.", "Lights are now off.", "I've turned off the lights."],
-    "set_temperature": ["Setting the temperature to {temp} degrees.", "I've set the thermostat to {temp}."]
-  },
-  "small_talk": {
-    "favorite_color": ["I love blue, it reminds me of the sky.", "My favorite color is green. It's soothing.", "I like all colors equally."],
-    "favorite_food": ["I don't eat food, but if I could, I'd love pizza!", "Hmm, maybe pasta? I imagine it tastes great!"]
-  },
-  "unknown_command": ["I'm sorry, I didn't understand that.", "Could you repeat that?", "I didn't get that. Could you clarify?"]
+  "commands": [
+    {
+      "category": "greetings",
+      "patterns": ["hello", "hi", "hey", "namaste", "hola"],
+      "responses": ["Hello there!", "Hi!", "Greetings!", "Howdy!", "Namaste!"]
+    },
+    {
+      "category": "how_are_you",
+      "patterns": ["how are you", "how's it going", "what's up"],
+      "responses": ["I'm doing great, thanks for asking!", "All systems are operational!", "I am here and ready!", "Feeling awesome, how about you?"]
+    },
+    {
+      "category": "farewell",
+      "patterns": ["goodbye", "bye", "go offline"],
+      "responses": ["Goodbye!", "See you later!", "Going offline.", "Take care!"]
+    },
+    {
+      "category": "time",
+      "patterns": ["what time is it", "tell me the time", "current time"],
+      "responses": ["It's {time}.", "The time is currently {time}.", "Right now, it's {time}."]
+    },
+    {
+      "category": "date",
+      "patterns": ["what's the date", "tell me the date", "current date"],
+      "responses": ["Today's date is {date}.", "The current date is {date}.", "It's {date} today."]
+    },
+    {
+      "category": "search_google",
+      "patterns": ["search google for", "google for", "find on google"],
+      "responses": ["Here are the search results for {query}:", "I found this for you on Google:", "Check out these results for {query}:"]
+    },
+    {
+      "category": "open_website",
+      "patterns": ["open", "launch", "go to"],
+      "responses": ["Opening {site}.", "Launching {site} for you.", "Taking you to {site}."]
+    },
+    {
+      "category": "jokes",
+      "patterns": ["tell me a joke", "make me laugh", "joke"],
+      "responses": [
+        "Why don't scientists trust atoms? Because they make up everything!",
+        "Why did the math book look sad? Because it had too many problems.",
+        "Why don’t skeletons fight each other? They don’t have the guts!"
+      ]
+    },
+    {
+      "category": "unknown_command",
+      "patterns": ["*"],
+      "responses": ["I'm sorry, I didn't understand that.", "Could you repeat that?", "I didn't get that. Could you clarify?"]
+    }
+  ]
 }
