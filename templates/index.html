@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A.I.N.O.R - Custom UI</title>
+    <title>A.I.N.O.R - Responsive UI</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Dark gradient background with smooth animations */
+        /* Responsive gradient background */
         body {
             margin: 0;
             padding: 0;
@@ -18,10 +18,11 @@
             align-items: center;
         }
 
+        /* Chat container - adjusts based on screen size */
         .chat-container {
-            width: 70%;
+            width: 90%;
             max-width: 800px;
-            height: 70vh;
+            height: 80vh;
             background-color: rgba(30, 30, 30, 0.9);
             border-radius: 20px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
@@ -30,6 +31,7 @@
             padding: 20px;
         }
 
+        /* Messages area with scroll */
         .messages {
             flex-grow: 1;
             overflow-y: auto;
@@ -37,6 +39,7 @@
             margin-bottom: 15px;
         }
 
+        /* Message styles */
         .message {
             background-color: #252525;
             color: #ddd;
@@ -61,6 +64,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Input container for message input */
         .input-container {
             display: flex;
             align-items: center;
@@ -97,6 +101,43 @@
             background-color: #218838;
         }
 
+        /* Media queries for responsiveness */
+        @media (max-width: 768px) {
+            .chat-container {
+                width: 95%;
+                height: 75vh;
+            }
+
+            .input-container button {
+                padding: 8px 15px;
+            }
+
+            .message {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chat-container {
+                height: 70vh;
+                padding: 15px;
+            }
+
+            .input-container {
+                padding: 8px 15px;
+            }
+
+            .input-container button {
+                padding: 6px 10px;
+                font-size: 0.85rem;
+            }
+
+            .message {
+                font-size: 0.85rem;
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -126,7 +167,7 @@
     function sendMessage() {
         var input = document.getElementById('userInput').value;
         if (!input.trim()) return;
-        
+
         appendMessage(input, 'user');
         document.getElementById('userInput').value = '';
         simulateResponse();
