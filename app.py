@@ -3,10 +3,10 @@ from flask import Flask, render_template, request, jsonify
 from AINOR import AINORAssistant
 import re
 import random
-import sys
 import logging
-import json  # To handle the conversation file
-import datetime
+import json
+import ast  # For analyzing Python code
+import traceback  # To handle exceptions and generate traceback
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -24,7 +24,6 @@ with open('conversation.json') as f:
 # ===================================== HELPER FUNCTIONS ==============================================
 
 def get_time(location=None):
-    # If a location is provided, return the time for that location
     if location:
         response = requests.get(f"http://worldtimeapi.org/api/timezone/{location}")
         if response.ok:
@@ -48,8 +47,7 @@ def google_search(query):
     return results
 
 def get_weather(location):
-    # Replace 'your_api_key' with your actual OpenWeatherMap API key
-    api_key = 'ab365baf6721be32e96687c938d415bc'
+    api_key = 'ab365baf6721be32e96687c938d415bc'  # Replace with your OpenWeatherMap API key
     url = f"http://api.openweathermap.org/data/2.5/weather?q={location}&appid={api_key}&units=metric"
     response = requests.get(url)
     if response.ok:
@@ -58,6 +56,16 @@ def get_weather(location):
         description = weather_data['weather'][0]['description']
         return f"{description} at {temp}°C"
     return "I'm unable to retrieve the weather information."
+
+def analyze_code(code):
+    try:
+        # Use AST to parse the code and find issues
+        tree = ast.parse(code)
+        return "No syntax errors found."  # If the code parses without error
+    except SyntaxError as e:
+        return f"Syntax error: {e.msg} at line {e.lineno}, column {e.offset}"
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
 
 # ======================================= ROUTES =====================================================
 
@@ -74,6 +82,11 @@ def process_command():
 # =================================== COMMAND HANDLER ================================================
 
 def handle_command(command):
+    # Check for code analysis request
+    if command.startswith("analyze code"):
+        code = command.replace("analyze code", "").strip()
+        return analyze_code(code)
+
     for entry in conversation_data["commands"]:
         for pattern in entry["patterns"]:
             if pattern == "*" or re.search(pattern, command):
