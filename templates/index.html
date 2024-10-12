@@ -109,17 +109,17 @@
         .branding {
             position: absolute;
             top: 20px;
-            left: 20px; /* Updated position for branding */
+            left: 20px; /* Changed to left */
             color: white;
             font-size: 1.5rem;
             font-weight: bold;
         }
 
-        /* Profile picture */
+        /* Profile Picture */
         .profile-pic {
             position: absolute;
             top: 20px;
-            right: 20px; /* Updated position for profile picture */
+            right: 20px; /* Position for profile picture */
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -145,8 +145,8 @@
             }
 
             .profile-pic {
-                width: 30px;
-                height: 30px;
+                width: 35px;
+                height: 35px;
             }
         }
     </style>
@@ -155,17 +155,18 @@
 
 <!-- A.I.N.O.R Branding -->
 <div class="branding">A.I.N.O.R</div>
-<img id="profilePic" class="profile-pic hidden" src="" alt="Profile Picture" />
+<img id="profilePic" class="profile-pic hidden" src="" alt="Profile Picture">
 
 <!-- Chat Container -->
-<div class="chat-container" id="chatContainer" style="display: none;">
+<div class="chat-container" id="chatContainer">
     <!-- Messages will appear here -->
 </div>
 
 <!-- Input Area fixed at the bottom -->
-<div class="input-area" style="display: none;">
+<div class="input-area">
     <input type="text" id="userInput" placeholder="Ask AINOR something..." onkeypress="checkKey(event)">
     <button id="sendBtn">Send</button>
+    <button id="openModalBtn" class="ml-2 bg-blue-500 hover:bg-blue-400 p-2 rounded">Login</button>
 </div>
 
 <!-- Warning text below the input box -->
@@ -174,18 +175,63 @@
 <!-- Modal Container -->
 <div id="modalContainer"></div>
 
+<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js"></script>
 <script>
-    // Show the login modal on page load
-    window.onload = function() {
-        openModal();
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+    
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Google sign-in
+    function googleSignIn() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider).then((result) => {
+            const user = result.user;
+            document.getElementById('profilePic').src = user.photoURL; // Fetch the profile picture
+            document.getElementById('profilePic').classList.remove('hidden'); // Show the profile picture
+            console.log('User info: ', user); // Optional: Log user info
+            // Close the login modal here after successful login
+            const loginModal = document.getElementById('loginModal');
+            loginModal.classList.add('hidden');
+        }).catch((error) => {
+            console.error('Error during sign in:', error);
+        });
+    }
+
+    // Add event listeners for buttons
+    document.getElementById('openModalBtn').onclick = function () {
+        document.getElementById('loginModal').classList.remove('hidden');
     };
 
-    function openModal() {
-        const loginModal = document.getElementById('loginModal');
-        if (loginModal) {
-            loginModal.classList.remove('hidden');
-        }
-    }
+    // Load the login modal HTML
+    fetch('loginModal.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('modalContainer').innerHTML = data;
+
+            // Event listeners for modal
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            closeModalBtn.onclick = function () {
+                document.getElementById('loginModal').classList.add('hidden');
+            };
+
+            // Add login functionality here
+            const googleLoginBtn = document.getElementById('googleLoginBtn');
+            googleLoginBtn.onclick = function () {
+                googleSignIn(); // Trigger Google Sign-In
+            };
+        })
+        .catch(error => console.error('Error loading the modal:', error));
 
     document.getElementById('sendBtn').onclick = function() {
         sendMessage();
@@ -218,38 +264,10 @@
         chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the latest message
     }
 
-    // Load the login modal HTML
-    fetch('loginModal.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('modalContainer').innerHTML = data;
-
-            // Event listeners for modal
-            const openModalBtn = document.getElementById('openModalBtn');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            const loginModal = document.getElementById('loginModal');
-
-            openModalBtn.onclick = function () {
-                loginModal.classList.remove('hidden');
-            };
-
-            closeModalBtn.onclick = function () {
-                loginModal.classList.add('hidden');
-            };
-
-            // Add login functionality here
-            const loginBtn = document.getElementById('loginBtn');
-            loginBtn.onclick = function() {
-                // Implement your login logic here
-                const profilePicUrl = "https://example.com/profile-pic.jpg"; // Replace with actual profile pic URL
-                document.getElementById('profilePic').src = profilePicUrl; // Set profile pic URL
-                document.getElementById('profilePic').classList.remove('hidden'); // Show profile pic
-                loginModal.classList.add('hidden'); // Hide the modal
-                document.getElementById('chatContainer').style.display = "flex"; // Show chat container
-                document.querySelector('.input-area').style.display = "flex"; // Show input area
-            };
-        })
-        .catch(error => console.error('Error loading the modal:', error));
+    // Show the login modal on first load
+    window.onload = function() {
+        document.getElementById('loginModal').classList.remove('hidden');
+    };
 </script>
 
 </body>
