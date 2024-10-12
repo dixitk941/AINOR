@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A.I.N.O.R - Fullscreen UI</title>
+    <title>A.I.N.O.R - Chat UI</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         /* Fullscreen background with gradient */
@@ -14,32 +14,57 @@
             background: linear-gradient(135deg, #131313, #1a1a1a);
             height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            flex-direction: column;
         }
 
-        /* Chat container for full screen */
+        /* Chat container takes up most of the screen */
         .chat-container {
-            width: 100%;
-            height: 100%;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: flex-start;
             align-items: center;
-            position: relative;
         }
 
-        /* Floating centered input box */
+        /* Chat messages */
+        .message {
+            width: 80%;
+            max-width: 600px;
+            background-color: #3a3a3a;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
+
+        .message.user {
+            background-color: #28a745;
+            align-self: flex-end;
+        }
+
+        .message.ainor {
+            background-color: #3e3e3e;
+            align-self: flex-start;
+        }
+
+        /* Input box at the bottom */
         .input-area {
             background-color: rgba(50, 50, 50, 0.9);
             border-radius: 30px;
             padding: 15px 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 80%;
-            max-width: 600px;
+            width: 100%;
+            max-width: 100vw;
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
         }
 
         .input-area input {
@@ -72,17 +97,15 @@
         /* Message below the input box */
         .warning-text {
             color: #f0f0f0;
-            margin-top: 20px;
-            font-size: 0.9rem;
+            margin-top: 5px;
+            font-size: 0.8rem;
             text-align: center;
+            position: fixed;
+            bottom: 5px;
+            width: 100%;
         }
 
-        /* Messages container - hidden in this design */
-        .messages {
-            display: none;
-        }
-
-        /* Media queries for responsive design */
+        /* Media queries for responsiveness */
         @media (max-width: 768px) {
             .input-area {
                 padding: 10px 20px;
@@ -93,39 +116,26 @@
             }
 
             .warning-text {
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .input-area {
-                padding: 8px 15px;
-            }
-
-            .input-area button {
-                padding: 6px 10px;
-                font-size: 0.85rem;
-            }
-
-            .warning-text {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="chat-container">
-    <!-- Centered floating input area -->
-    <div>
-        <div class="input-area">
-            <input type="text" id="userInput" placeholder="Ask AINOR something..." onkeypress="checkKey(event)">
-            <button id="sendBtn">Send</button>
-        </div>
-        <!-- Message below the input box -->
-        <p class="warning-text">AINOR can make mistakes. Check important info.</p>
-    </div>
+<!-- Chat Container -->
+<div class="chat-container" id="chatContainer">
+    <!-- Messages will appear here -->
 </div>
+
+<!-- Input Area fixed at the bottom -->
+<div class="input-area">
+    <input type="text" id="userInput" placeholder="Ask AINOR something..." onkeypress="checkKey(event)">
+    <button id="sendBtn">Send</button>
+</div>
+
+<!-- Warning text below the input box -->
+<p class="warning-text">AINOR can make mistakes. Check important info.</p>
 
 <script>
     document.getElementById('sendBtn').onclick = function() {
@@ -142,9 +152,21 @@
         var input = document.getElementById('userInput').value;
         if (!input.trim()) return;
 
-        // Simulate a message being sent and received
-        document.getElementById('userInput').value = '';
-        console.log('Message sent:', input);
+        appendMessage(input, 'user');
+        setTimeout(() => appendMessage('This is a response from AINOR.', 'ainor'), 1000);
+
+        document.getElementById('userInput').value = ''; // Clear input after sending
+    }
+
+    function appendMessage(message, sender) {
+        const chatContainer = document.getElementById('chatContainer');
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}`;
+        messageDiv.innerText = message;
+
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the latest message
     }
 </script>
 
