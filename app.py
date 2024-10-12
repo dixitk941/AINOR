@@ -6,7 +6,6 @@ import random
 import sys
 import logging
 import requests
-from bs4 import BeautifulSoup
 from googlesearch import search  # Import the googlesearch library
 import datetime
 import json  # To handle the conversation file
@@ -31,17 +30,6 @@ def get_time():
 
 def get_date():
     return obj.tell_me_date()
-
-def wish():
-    hour = int(datetime.datetime.now().hour)
-    if 0 <= hour < 12:
-        greeting = "Good Morning"
-    elif 12 <= hour < 18:
-        greeting = "Good Afternoon"
-    else:
-        greeting = "Good Evening"
-    c_time = obj.tell_time()
-    return f"{greeting}. Currently, it is {c_time}. I am AINOR, online and ready. How may I assist you?"
 
 def google_search(query):
     results = []
@@ -70,56 +58,57 @@ def process_command():
 
 # =================================== COMMAND HANDLER ================================================
 
+def match_pattern(command, patterns):
+    """Utility function to match a command with any pattern."""
+    for pattern in patterns:
+        if re.search(pattern, command):
+            return True
+    return False
+
 def handle_command(command):
-    # Greetings handling
-    if re.search(r'\b(hello|hi|hey|namaste|hola)\b', command):
-        response = random.choice(conversation_data["greetings"]["hello"])
+    # Match greetings
+    if match_pattern(command, conversation_data["greetings"]["patterns"]):
+        response = random.choice(conversation_data["greetings"]["responses"])
         return response
 
-    # How are you response
-    elif re.search(r'how are you', command):
-        response = random.choice(conversation_data["greetings"]["how_are_you"])
+    # Match "how are you" responses
+    elif match_pattern(command, conversation_data["how_are_you"]["patterns"]):
+        response = random.choice(conversation_data["how_are_you"]["responses"])
         return response
 
-    # Command: Tell date
-    elif re.search('date', command):
+    # Match date
+    elif match_pattern(command, conversation_data["date"]["patterns"]):
         date = get_date()
-        response = random.choice(conversation_data["date"]).replace("{date}", date)
+        response = random.choice(conversation_data["date"]["responses"]).replace("{date}", date)
         return response
 
-    # Command: Tell time
-    elif "time" in command:
+    # Match time
+    elif match_pattern(command, conversation_data["time"]["patterns"]):
         time_c = get_time()
-        response = random.choice(conversation_data["time"]).replace("{time}", time_c)
+        response = random.choice(conversation_data["time"]["responses"]).replace("{time}", time_c)
         return response
 
-    # Command: Open a website
-    elif re.search('open', command):
-        domain = command.split(' ')[-1]
-        obj.website_opener(domain)
-        return f'Opening {domain}'
-
-    # Command: Search Google
-    elif re.search('search google for', command):
+    # Match Google search
+    elif match_pattern(command, conversation_data["search_google"]["patterns"]):
         query = command.replace('search google for', '').strip()
         results = google_search(query)
         
         if results:
-            response = random.choice(conversation_data["search_google"]).replace("{query}", query)
+            response = random.choice(conversation_data["search_google"]["responses"]).replace("{query}", query)
             response += "".join([f"\n{index + 1}. {result}" for index, result in enumerate(results)])
         else:
             response = "No results found."
         
         return response
 
-    # Command: Exit or say goodbye
-    elif re.search(r'\b(goodbye|bye|offline)\b', command):
-        response = random.choice(conversation_data["farewell"])
+    # Match farewell
+    elif match_pattern(command, conversation_data["farewell"]["patterns"]):
+        response = random.choice(conversation_data["farewell"]["responses"])
         sys.exit()
 
     # Unknown command
     else:
-        response = random.choice(conversation_data["unknown_command"])
+        response = random.choice(conversation_data["unknown_command"]["responses"])
         return response
 
 # ===================================== MAIN EXECUTION ===============================================
