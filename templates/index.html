@@ -109,10 +109,21 @@
         .branding {
             position: absolute;
             top: 20px;
-            right: 20px;
+            left: 20px; /* Updated position for branding */
             color: white;
             font-size: 1.5rem;
             font-weight: bold;
+        }
+
+        /* Profile picture */
+        .profile-pic {
+            position: absolute;
+            top: 20px;
+            right: 20px; /* Updated position for profile picture */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
         }
 
         /* Media queries for responsiveness */
@@ -132,6 +143,11 @@
             .branding {
                 font-size: 1.2rem;
             }
+
+            .profile-pic {
+                width: 30px;
+                height: 30px;
+            }
         }
     </style>
 </head>
@@ -139,17 +155,17 @@
 
 <!-- A.I.N.O.R Branding -->
 <div class="branding">A.I.N.O.R</div>
+<img id="profilePic" class="profile-pic hidden" src="" alt="Profile Picture" />
 
 <!-- Chat Container -->
-<div class="chat-container" id="chatContainer">
+<div class="chat-container" id="chatContainer" style="display: none;">
     <!-- Messages will appear here -->
 </div>
 
 <!-- Input Area fixed at the bottom -->
-<div class="input-area">
+<div class="input-area" style="display: none;">
     <input type="text" id="userInput" placeholder="Ask AINOR something..." onkeypress="checkKey(event)">
     <button id="sendBtn">Send</button>
-    <button id="openModalBtn" class="ml-2 bg-blue-500 hover:bg-blue-400 p-2 rounded">Login</button>
 </div>
 
 <!-- Warning text below the input box -->
@@ -159,6 +175,18 @@
 <div id="modalContainer"></div>
 
 <script>
+    // Show the login modal on page load
+    window.onload = function() {
+        openModal();
+    };
+
+    function openModal() {
+        const loginModal = document.getElementById('loginModal');
+        if (loginModal) {
+            loginModal.classList.remove('hidden');
+        }
+    }
+
     document.getElementById('sendBtn').onclick = function() {
         sendMessage();
     };
@@ -212,9 +240,13 @@
             // Add login functionality here
             const loginBtn = document.getElementById('loginBtn');
             loginBtn.onclick = function() {
-                // Implement your login logic
-                alert('Login button clicked!'); // Placeholder for actual login logic
-                loginModal.classList.add('hidden');
+                // Implement your login logic here
+                const profilePicUrl = "https://example.com/profile-pic.jpg"; // Replace with actual profile pic URL
+                document.getElementById('profilePic').src = profilePicUrl; // Set profile pic URL
+                document.getElementById('profilePic').classList.remove('hidden'); // Show profile pic
+                loginModal.classList.add('hidden'); // Hide the modal
+                document.getElementById('chatContainer').style.display = "flex"; // Show chat container
+                document.querySelector('.input-area').style.display = "flex"; // Show input area
             };
         })
         .catch(error => console.error('Error loading the modal:', error));
