@@ -8,48 +8,49 @@
     <style>
         /* Custom styles */
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e, #0f0f1a); /* Gradient background */
-            animation: backgroundAnimation 10s infinite alternate; /* Background animation */
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #2b2d42, #1f1f2e); /* Softer dark theme gradient */
+            animation: backgroundAnimation 10s infinite alternate;
         }
         @keyframes backgroundAnimation {
             0% { background-position: 0% 50%; }
             100% { background-position: 100% 50%; }
         }
         .chat-container {
-            border-radius: 20px;
-            background-color: rgba(20, 20, 20, 0.8); /* Semi-transparent dark background */
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            background-color: rgba(35, 35, 40, 0.9); /* Slightly lighter semi-transparent */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            padding: 20px;
         }
         .input-area {
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
         }
         .message {
             animation: fadeIn 0.5s ease forwards;
             margin-bottom: 10px;
-            border-radius: 15px;
+            border-radius: 20px;
             padding: 10px 15px;
             max-width: 75%;
             word-wrap: break-word;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
         .user {
-            background-color: #4caf50; /* User message background */
+            background-color: #4caf50;
             color: white;
             align-self: flex-end;
         }
         .assistant {
-            background-color: #3e3e3e; /* Assistant message background */
-            color: #e0e0e0;
+            background-color: #333;
+            color: #ddd;
             align-self: flex-start;
         }
         .typing-indicator {
             margin-bottom: 10px;
             animation: fadeIn 0.5s ease forwards;
-            border-radius: 15px;
+            border-radius: 20px;
             padding: 10px 15px;
-            max-width: 75%;
-            background-color: #3e3e3e;
+            background-color: #3a3a3a;
             color: #e0e0e0;
         }
         @keyframes fadeIn {
@@ -59,8 +60,8 @@
         .submit-button {
             background-color: #007BFF;
             color: white;
-            border-radius: 8px;
-            padding: 10px 20px;
+            border-radius: 50px;
+            padding: 12px 24px;
             transition: background-color 0.3s;
         }
         .submit-button:hover {
@@ -70,16 +71,15 @@
 </head>
 <body class="flex flex-col h-screen text-gray-200">
     <div class="flex-grow flex flex-col p-4">
-        <h1 class="text-center text-5xl font-bold mb-6 text-white">A.I.N.O.R Voice Assistant</h1>
+        <h1 class="text-center text-4xl font-bold mb-6 text-white">A.I.N.O.R Voice Assistant</h1>
         <div class="flex-1 overflow-y-auto">
-            <div class="chat-container p-4 h-full">
-                <div id="chat-container" class="flex flex-col space-y-2"></div>
-            </div>
+            <div class="chat-container p-4 h-full flex flex-col space-y-4" id="chat-container"></div>
         </div>
-        <div class="input-area flex p-4">
-            <input type="text" id="command" placeholder="Type your command..." onkeypress="checkEnter(event)"
-                   class="flex-1 p-3 bg-gray-800 text-gray-200 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
-            <div class="flex items-center ml-3">
+        <div class="input-area flex items-center p-4">
+            <input type="text" id="command" placeholder="Type your command..." 
+                   onkeypress="checkEnter(event)"
+                   class="flex-1 p-4 bg-gray-800 text-gray-200 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+            <div class="ml-4">
                 <button id="submit" class="submit-button">Send</button>
             </div>
         </div>
@@ -88,7 +88,7 @@
     <script>
         document.getElementById('submit').onclick = function() {
             var command = document.getElementById('command').value;
-            if (command.trim() === "") return; // Prevent empty submissions
+            if (command.trim() === "") return;
             appendMessage(command, 'user');
             processCommand(command);
         };
@@ -100,9 +100,9 @@
         }
 
         function processCommand(command) {
-            appendTypingIndicator(); // Show typing indicator
+            appendTypingIndicator();
             if (command.toLowerCase() === 'check weather') {
-                getLocationAndWeather(); // Call weather function
+                getLocationAndWeather();
                 return;
             }
 
@@ -115,9 +115,9 @@
             })
             .then(response => response.json())
             .then(data => {
-                removeTypingIndicator(); // Remove typing indicator
+                removeTypingIndicator();
                 appendMessage(data.response, 'assistant');
-                document.getElementById('command').value = ''; // Clear input
+                document.getElementById('command').value = '';
             });
         }
 
@@ -128,7 +128,7 @@
 
             const chatContainer = document.getElementById('chat-container');
             chatContainer.appendChild(message);
-            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the latest message
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
         function appendTypingIndicator() {
@@ -145,32 +145,26 @@
             }
         }
 
-        // Check for location permission and get weather
         function getLocationAndWeather() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
-
-                    // Fetch weather based on coordinates
                     fetchWeather(lat, lon);
-                }, (error) => {
-                    alert("Unable to retrieve your location. Please enable location services.");
+                }, () => {
+                    alert("Unable to retrieve your location.");
                 });
             } else {
                 alert("Geolocation is not supported by this browser.");
             }
         }
 
-        // Placeholder function for fetching weather
         function fetchWeather(lat, lon) {
-            // Replace this with your actual weather fetching logic
             fetch(`https://api.weatherapi.com/v1/current.json?key=YOUR_API_KEY&q=${lat},${lon}`)
                 .then(response => response.json())
                 .then(data => {
                     appendMessage(`Current weather: ${data.current.condition.text}, Temperature: ${data.current.temp_c}°C`, 'assistant');
-                })
-                .catch(err => console.error(err));
+                });
         }
     </script>
 </body>
