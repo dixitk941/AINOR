@@ -4,108 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A.I.N.O.R - Voice Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
+        /* Custom styles */
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f0f0f0; /* Light background */
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            background: linear-gradient(135deg, #1a1a2e, #0f0f1a); /* Gradient background */
+            animation: backgroundAnimation 10s infinite alternate; /* Background animation */
         }
-
-        h1 {
-            text-align: center;
-            margin: 20px 0;
-            font-size: 24px;
-            color: #444;
+        @keyframes backgroundAnimation {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
-
-        .container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            overflow-y: auto;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background-color: #fff; /* White background for chat area */
+        .chat-container {
+            border-radius: 20px;
+            background-color: rgba(20, 20, 20, 0.8); /* Semi-transparent dark background */
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
         }
-
+        .input-area {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
         .message {
-            max-width: 70%;
-            padding: 12px;
-            border-radius: 10px;
-            margin: 5px 0;
-            word-wrap: break-word;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .user {
-            align-self: flex-end;
-            background-color: #4CAF50; /* Green for user messages */
-            color: white;
-        }
-
-        .assistant {
-            align-self: flex-start;
-            background-color: #e1e1e1; /* Light grey for assistant messages */
-            color: #000;
-        }
-
-        #command-container {
-            display: flex;
-            padding: 10px;
-            background-color: #ffffff; /* White background for input area */
-            border-top: 1px solid #e0e0e0; /* Light border for separation */
-        }
-
-        #command {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
-            outline: none;
-            margin-right: 10px;
-        }
-
-        #buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
+            animation: fadeIn 0.5s ease forwards;
+            margin-bottom: 10px;
+            border-radius: 15px;
             padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            background-color: #007BFF; /* Blue button */
-            color: #ffffff;
-            transition: background-color 0.3s;
-            font-size: 16px;
+            max-width: 75%;
+            word-wrap: break-word;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
-
-        button:hover {
-            background-color: #0056b3; /* Darker blue on hover */
+        .user {
+            background-color: #4caf50; /* User message background */
+            color: white;
+            align-self: flex-end;
         }
-
-        button:disabled {
+        .assistant {
+            background-color: #3e3e3e; /* Assistant message background */
+            color: #e0e0e0;
+            align-self: flex-start;
+        }
+        .typing-indicator {
+            margin-bottom: 10px;
+            animation: fadeIn 0.5s ease forwards;
+            border-radius: 15px;
+            padding: 10px 15px;
+            max-width: 75%;
+            background-color: #3e3e3e;
+            color: #e0e0e0;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .submit-button {
             background-color: #007BFF;
-            opacity: 0.6;
-            cursor: not-allowed;
+            color: white;
+            border-radius: 8px;
+            padding: 10px 20px;
+            transition: background-color 0.3s;
+        }
+        .submit-button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
-<body>
-    <h1>A.I.N.O.R Voice Assistant</h1>
-    <div class="container" id="chat-container"></div>
-    <div id="command-container">
-        <input type="text" id="command" placeholder="Type your command..." onkeypress="checkEnter(event)">
-        <div id="buttons">
-            <button id="submit">Send</button>
-            <button id="mic" onclick="startMic()">🎤</button>
+<body class="flex flex-col h-screen text-gray-200">
+    <div class="flex-grow flex flex-col p-4">
+        <h1 class="text-center text-5xl font-bold mb-6 text-white">A.I.N.O.R Voice Assistant</h1>
+        <div class="flex-1 overflow-y-auto">
+            <div class="chat-container p-4 h-full">
+                <div id="chat-container" class="flex flex-col space-y-2"></div>
+            </div>
+        </div>
+        <div class="input-area flex p-4">
+            <input type="text" id="command" placeholder="Type your command..." onkeypress="checkEnter(event)"
+                   class="flex-1 p-3 bg-gray-800 text-gray-200 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+            <div class="flex items-center ml-3">
+                <button id="submit" class="submit-button">Send</button>
+            </div>
         </div>
     </div>
 
@@ -124,6 +100,7 @@
         }
 
         function processCommand(command) {
+            appendTypingIndicator(); // Show typing indicator
             if (command.toLowerCase() === 'check weather') {
                 getLocationAndWeather(); // Call weather function
                 return;
@@ -138,6 +115,7 @@
             })
             .then(response => response.json())
             .then(data => {
+                removeTypingIndicator(); // Remove typing indicator
                 appendMessage(data.response, 'assistant');
                 document.getElementById('command').value = ''; // Clear input
             });
@@ -145,7 +123,7 @@
 
         function appendMessage(text, sender) {
             const message = document.createElement('div');
-            message.className = 'message ' + sender;
+            message.className = 'message ' + (sender === 'user' ? 'user' : 'assistant');
             message.innerText = text;
 
             const chatContainer = document.getElementById('chat-container');
@@ -153,9 +131,18 @@
             chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the latest message
         }
 
-        function startMic() {
-            // Here you would integrate a microphone listening functionality
-            alert('Microphone function to be implemented.');
+        function appendTypingIndicator() {
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.innerText = 'A.I.N.O.R is typing...';
+            document.getElementById('chat-container').appendChild(typingIndicator);
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.querySelector('.typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
         }
 
         // Check for location permission and get weather
