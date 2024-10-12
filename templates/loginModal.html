@@ -8,81 +8,72 @@
     <style>
         .hidden { display: none; }
 
-      .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    overflow: hidden;
-}
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow: hidden;
+        }
 
-.modal-content {
-    position: relative;
-    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
-    padding: 20px;
-    border-radius: 15px;
-    max-width: 500px;
-    width: 100%;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    z-index: 10;
-}
+        .modal-content {
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
 
-.threejs-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-}
+        .modal-body {
+            position: relative;
+            z-index: 10;
+        }
 
-.modal-body {
-    position: relative;
-    z-index: 10;
-}
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #333;
+        }
 
-.close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    cursor: pointer;
-    font-size: 24px;
-    color: #333;
-}
+        .error {
+            color: red;
+            font-size: 14px;
+        }
 
-.error {
-    color: red;
-    font-size: 14px;
-}
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
 
-input {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
+        button {
+            background-color: #0077ff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
 
-button {
-    background-color: #0077ff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 5px 0;
-}
-
-button:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
-}
+        button:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -131,24 +122,26 @@ button:disabled {
     </div>
 
     <!-- Firebase Configuration -->
-    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js"></script>
-    <script>
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js';
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js';
+
         // Your web app's Firebase configuration
         const firebaseConfig = {
-    apiKey: "AIzaSyCPi8Kwdvs4XB0jyQ7AZTSjAlLrYBnQvMI",
-    authDomain: "bail-reckoner-21549.firebaseapp.com",
-    projectId: "bail-reckoner-21549",
-    storageBucket: "bail-reckoner-21549.appspot.com",
-    messagingSenderId: "372088590601",
-    appId: "1:372088590601:web:c5b3198dd00135a65bc3d8",
-    measurementId: "G-JW4YZHW29R"
+            apiKey: "AIzaSyCPi8Kwdvs4XB0jyQ7AZTSjAlLrYBnQvMI",
+            authDomain: "bail-reckoner-21549.firebaseapp.com",
+            projectId: "bail-reckoner-21549",
+            storageBucket: "bail-reckoner-21549.appspot.com",
+            messagingSenderId: "372088590601",
+            appId: "1:372088590601:web:c5b3198dd00135a65bc3d8",
+            measurementId: "G-JW4YZHW29R"
         };
 
         // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
 
         // Open Modal
         document.getElementById('openModalBtn').onclick = function () {
@@ -165,32 +158,32 @@ button:disabled {
 
         // Handle Google Login
         document.getElementById('googleLoginBtn').onclick = function () {
-            auth.signInWithPopup(googleProvider)
+            signInWithPopup(auth, googleProvider)
                 .then((result) => {
                     const user = result.user;
-                    console.log("User logged in: ", user);
-                    document.getElementById('loginModal').classList.add('hidden');
+                    console.log('User logged in:', user);
+                    // Handle successful login here
                 })
                 .catch((error) => {
-                    document.getElementById('error').innerText = error.message;
+                    console.error('Error during Google login:', error);
                 });
         };
 
-        // Handle Form Submission
+        // Handle Email Login
         document.getElementById('loginForm').onsubmit = function (event) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent form submission
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            auth.signInWithEmailAndPassword(email, password)
+            signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Signed in
                     const user = userCredential.user;
-                    console.log("User logged in: ", user);
-                    document.getElementById('loginModal').classList.add('hidden');
+                    console.log('User logged in:', user);
+                    // Handle successful login here
                 })
                 .catch((error) => {
-                    document.getElementById('error').innerText = error.message;
+                    const errorMessage = error.message;
+                    document.getElementById('error').innerText = errorMessage;
                 });
         };
     </script>
