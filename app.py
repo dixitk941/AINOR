@@ -26,9 +26,6 @@ with open('conversation.json') as f:
 
 # ===================================== HELPER FUNCTIONS ==============================================
 
-def speak(text):
-    obj.tts(text)
-
 def get_time():
     return obj.tell_time()
 
@@ -44,7 +41,7 @@ def wish():
     else:
         greeting = "Good Evening"
     c_time = obj.tell_time()
-    speak(f"{greeting}. Currently, it is {c_time}. I am AINOR, online and ready. How may I assist you?")
+    return f"{greeting}. Currently, it is {c_time}. I am AINOR, online and ready. How may I assist you?"
 
 def google_search(query):
     results = []
@@ -77,34 +74,29 @@ def handle_command(command):
     # Greetings handling
     if re.search(r'\b(hello|hi|hey|namaste|hola)\b', command):
         response = random.choice(conversation_data["greetings"]["hello"])
-        speak(response)
         return response
 
     # How are you response
     elif re.search(r'how are you', command):
         response = random.choice(conversation_data["greetings"]["how_are_you"])
-        speak(response)
         return response
 
     # Command: Tell date
     elif re.search('date', command):
         date = get_date()
         response = random.choice(conversation_data["date"]).replace("{date}", date)
-        speak(response)
         return response
 
     # Command: Tell time
     elif "time" in command:
         time_c = get_time()
         response = random.choice(conversation_data["time"]).replace("{time}", time_c)
-        speak(response)
         return response
 
     # Command: Open a website
     elif re.search('open', command):
         domain = command.split(' ')[-1]
         obj.website_opener(domain)
-        speak(f'Opening {domain}')
         return f'Opening {domain}'
 
     # Command: Search Google
@@ -118,19 +110,16 @@ def handle_command(command):
         else:
             response = "No results found."
         
-        speak(response)
         return response
 
     # Command: Exit or say goodbye
     elif re.search(r'\b(goodbye|bye|offline)\b', command):
         response = random.choice(conversation_data["farewell"])
-        speak(response)
         sys.exit()
 
     # Unknown command
     else:
         response = random.choice(conversation_data["unknown_command"])
-        speak(response)
         return response
 
 # ===================================== MAIN EXECUTION ===============================================
