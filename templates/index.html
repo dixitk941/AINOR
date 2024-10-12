@@ -6,22 +6,32 @@
     <title>A.I.N.O.R - Voice Assistant</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* ChatGPT-like UI styles */
+        /* Centered chat layout */
         body {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
             margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-family: 'Arial', sans-serif;
-            background-color: #343541; /* ChatGPT-like background */
+            background-color: #343541;
         }
+
         .chat-container {
+            width: 600px; /* Fixed width for chat container */
+            height: 70vh; /* Set height */
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
+            justify-content: center;
+            align-items: center;
+            background-color: #444654;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             padding: 20px;
+            position: relative;
             overflow-y: auto;
         }
+
         .message {
             display: inline-block;
             padding: 10px 15px;
@@ -31,46 +41,65 @@
             word-wrap: break-word;
             animation: fadeIn 0.3s ease-in-out;
         }
+
         .user {
-            background-color: #007BFF; /* User message background */
+            background-color: #007BFF;
             color: white;
             align-self: flex-end;
         }
+
         .assistant {
-            background-color: #444654; /* Assistant message background */
+            background-color: #3f3f46;
             color: white;
             align-self: flex-start;
         }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Floating input box */
         .input-container {
+            position: fixed;
+            bottom: 40px;
+            width: 600px; /* Same width as the chat container */
             display: flex;
-            padding: 20px;
-            background-color: #40414f; /* Input background */
-            border-top: 1px solid #575960;
+            justify-content: center;
         }
-        .input-container input {
-            flex-grow: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
+
+        .input-box {
+            width: 100%;
+            display: flex;
             background-color: #40414f;
-            color: white;
+            border-radius: 25px;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
-        .input-container input:focus {
+
+        .input-box input {
+            flex-grow: 1;
+            background-color: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 25px;
+        }
+
+        .input-box input:focus {
             outline: none;
         }
+
         .send-button {
             background-color: #007BFF;
             color: white;
             border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
+            border-radius: 50%;
+            padding: 10px;
             margin-left: 10px;
             cursor: pointer;
         }
+
         .send-button:hover {
             background-color: #0056b3;
         }
@@ -82,9 +111,12 @@
     <!-- Chat messages will be dynamically inserted here -->
 </div>
 
+<!-- Floating Input Container -->
 <div class="input-container">
-    <input type="text" id="command" placeholder="Type your message here..." onkeypress="checkEnter(event)">
-    <button id="submit" class="send-button">Send</button>
+    <div class="input-box">
+        <input type="text" id="command" placeholder="Type your message..." onkeypress="checkEnter(event)">
+        <button id="submit" class="send-button">Send</button>
+    </div>
 </div>
 
 <script>
@@ -104,7 +136,6 @@
     function processCommand(command) {
         appendMessage("A.I.N.O.R is thinking...", 'assistant');
         setTimeout(() => {
-            // Simulating AI response after a delay
             appendMessage("Response for: " + command, 'assistant');
         }, 1500);
         document.getElementById('command').value = ''; // Clear the input
