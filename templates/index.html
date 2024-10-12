@@ -3,54 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A.I.N.O.R - Voice Assistant</title>
+    <title>A.I.N.O.R - Blackbox Clone</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Centered chat layout */
+        /* Full-screen dark background with center chat container */
         body {
             margin: 0;
-            height: 100vh;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #1e1e1e;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Arial', sans-serif;
-            background-color: #343541;
+            height: 100vh;
         }
 
         .chat-container {
-            width: 600px; /* Fixed width for chat container */
-            height: 70vh; /* Set height */
+            width: 600px;
+            height: 70vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: #444654;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            justify-content: space-between;
+            background-color: #2b2b2b;
+            border-radius: 15px;
             padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             position: relative;
+        }
+
+        .messages {
+            flex-grow: 1;
             overflow-y: auto;
+            padding: 10px;
+            background-color: #2e2e2e;
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
 
         .message {
-            display: inline-block;
+            background-color: #3a3a3a;
+            color: #fff;
             padding: 10px 15px;
             margin-bottom: 10px;
-            border-radius: 10px;
-            max-width: 80%;
+            border-radius: 8px;
+            max-width: 75%;
             word-wrap: break-word;
             animation: fadeIn 0.3s ease-in-out;
         }
 
-        .user {
+        .message.user {
             background-color: #007BFF;
-            color: white;
             align-self: flex-end;
         }
 
-        .assistant {
-            background-color: #3f3f46;
-            color: white;
+        .message.assistant {
+            background-color: #444;
             align-self: flex-start;
         }
 
@@ -59,68 +66,59 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Floating input box */
+        /* Floating input box at the bottom */
         .input-container {
-            position: fixed;
-            bottom: 40px;
-            width: 600px; /* Same width as the chat container */
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
+            background-color: #3a3a3a;
+            padding: 15px;
+            border-radius: 10px;
         }
 
-        .input-box {
-            width: 100%;
-            display: flex;
-            background-color: #40414f;
-            border-radius: 25px;
-            padding: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-        }
-
-        .input-box input {
+        .input-container input {
             flex-grow: 1;
             background-color: transparent;
             border: none;
             color: white;
             padding: 10px;
-            border-radius: 25px;
         }
 
-        .input-box input:focus {
+        .input-container input:focus {
             outline: none;
         }
 
-        .send-button {
+        .input-container button {
             background-color: #007BFF;
             color: white;
             border: none;
-            border-radius: 50%;
-            padding: 10px;
-            margin-left: 10px;
+            border-radius: 5px;
+            padding: 10px 20px;
             cursor: pointer;
+            margin-left: 10px;
         }
 
-        .send-button:hover {
+        .input-container button:hover {
             background-color: #0056b3;
         }
     </style>
 </head>
 <body>
 
-<div class="chat-container" id="chat-container">
-    <!-- Chat messages will be dynamically inserted here -->
-</div>
+<div class="chat-container">
+    <!-- Chat messages section -->
+    <div class="messages" id="messages">
+        <!-- Messages will be appended here -->
+    </div>
 
-<!-- Floating Input Container -->
-<div class="input-container">
-    <div class="input-box">
+    <!-- Floating input box -->
+    <div class="input-container">
         <input type="text" id="command" placeholder="Type your message..." onkeypress="checkEnter(event)">
-        <button id="submit" class="send-button">Send</button>
+        <button id="sendButton">Send</button>
     </div>
 </div>
 
 <script>
-    document.getElementById('submit').onclick = function () {
+    document.getElementById('sendButton').onclick = function () {
         var command = document.getElementById('command').value;
         if (command.trim() === "") return;
         appendMessage(command, 'user');
@@ -129,14 +127,15 @@
 
     function checkEnter(event) {
         if (event.key === "Enter") {
-            document.getElementById('submit').click();
+            document.getElementById('sendButton').click();
         }
     }
 
     function processCommand(command) {
-        appendMessage("A.I.N.O.R is thinking...", 'assistant');
+        // Simulate assistant response
+        appendMessage("A.I.N.O.R is processing...", 'assistant');
         setTimeout(() => {
-            appendMessage("Response for: " + command, 'assistant');
+            appendMessage("Here is the response for: " + command, 'assistant');
         }, 1500);
         document.getElementById('command').value = ''; // Clear the input
     }
@@ -146,9 +145,9 @@
         message.className = 'message ' + (sender === 'user' ? 'user' : 'assistant');
         message.innerText = text;
 
-        const chatContainer = document.getElementById('chat-container');
-        chatContainer.appendChild(message);
-        chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the latest message
+        const messagesContainer = document.getElementById('messages');
+        messagesContainer.appendChild(message);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to latest message
     }
 </script>
 
