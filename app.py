@@ -7,6 +7,7 @@ import logging
 import json
 import ast  # For analyzing Python code
 import traceback  # To handle exceptions and generate traceback
+from googlesearch import search  # Make sure to install this library if not already installed
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -83,7 +84,8 @@ print(factorial(5))  # Output: 120"""
     return s[::-1]
 
 # Example usage
-print(reverse_string("Hello"))  # Output: "olleH""""
+print(reverse_string("Hello"))  # Output: "olleH"
+"""
     
     elif "check if a number is prime" in task:
         return """def is_prime(n):
