@@ -59,13 +59,45 @@ def get_weather(location):
 
 def analyze_code(code):
     try:
-        # Use AST to parse the code and find issues
         tree = ast.parse(code)
         return "No syntax errors found."  # If the code parses without error
     except SyntaxError as e:
         return f"Syntax error: {e.msg} at line {e.lineno}, column {e.offset}"
     except Exception as e:
         return f"An error occurred: {str(e)}"
+
+def generate_code(task):
+    """Generate code snippets based on the given task."""
+    if "calculate factorial" in task:
+        return """def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+# Example usage
+print(factorial(5))  # Output: 120"""
+    
+    elif "reverse a string" in task:
+        return """def reverse_string(s):
+    return s[::-1]
+
+# Example usage
+print(reverse_string("Hello"))  # Output: "olleH""""
+    
+    elif "check if a number is prime" in task:
+        return """def is_prime(n):
+    if n <= 1:
+        return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+# Example usage
+print(is_prime(11))  # Output: True"""
+    
+    return "Sorry, I can't generate code for that task."
 
 # ======================================= ROUTES =====================================================
 
@@ -86,6 +118,11 @@ def handle_command(command):
     if command.startswith("analyze code"):
         code = command.replace("analyze code", "").strip()
         return analyze_code(code)
+    
+    # Check for code generation request
+    if command.startswith("generate code for"):
+        task = command.replace("generate code for", "").strip()
+        return generate_code(task)
 
     for entry in conversation_data["commands"]:
         for pattern in entry["patterns"]:
