@@ -8,6 +8,8 @@ import logging
 import requests
 from bs4 import BeautifulSoup
 from googlesearch import search  # Import the googlesearch library
+import datetime
+import json  # To handle the conversation file
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -18,20 +20,26 @@ obj = AINORAssistant()
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
-# Global Variables
-GREETINGS = ["hello AINOR", "AINOR", "wake up AINOR", "you there AINOR", "time to work AINOR", "hey AINOR", "ok AINOR", "are you there"]
-GREETINGS_RES = ["Always there for you.", "I am ready.", "Your wish is my command.", "How can I help you?", "I am online and ready."]
+# Load conversation file
+with open('conversation.json') as f:
+    conversation_data = json.load(f)
 
 # ===================================== HELPER FUNCTIONS ==============================================
 
 def speak(text):
     obj.tts(text)
 
+def get_time():
+    return obj.tell_time()
+
+def get_date():
+    return obj.tell_me_date()
+
 def wish():
     hour = int(datetime.datetime.now().hour)
-    if 0 <= hour <= 12:
+    if 0 <= hour < 12:
         greeting = "Good Morning"
-    elif 12 < hour < 18:
+    elif 12 <= hour < 18:
         greeting = "Good Afternoon"
     else:
         greeting = "Good Evening"
@@ -51,27 +59,6 @@ def google_search(query):
         return []  # Return empty list on error
     return results
 
-def handle_command(command):
-    if re.search('search google for', command):
-        # Extract search query
-        query = command.replace('search google for', '').strip()
-        logging.info(f"Searching Google for: {query}")  # Log the search query
-        
-        results = google_search(query)  # Perform Google search
-        
-        # Create a formatted response
-        if results:
-            response = "Here are the top search results:"
-            for index, result in enumerate(results):
-                response += f"\n{index + 1}. {result}"
-        else:
-            response = "No results found."
-        
-        speak(response)  # Speak the response
-        return response  # Return the response
-    # Other command handling...
-
-
 # ======================================= ROUTES =====================================================
 
 @app.route('/')
@@ -87,21 +74,29 @@ def process_command():
 # =================================== COMMAND HANDLER ================================================
 
 def handle_command(command):
+    # Greetings handling
+    if re.search(r'\b(hello|hi|hey|namaste|hola)\b', command):
+        response = random.choice(conversation_data["greetings"]["hello"])
+        speak(response)
+        return response
+
+    # How are you response
+    elif re.search(r'how are you', command):
+        response = random.choice(conversation_data["greetings"]["how_are_you"])
+        speak(response)
+        return response
+
     # Command: Tell date
-    if re.search('date', command):
-        date = obj.tell_me_date()
-        speak(date)
-        return date
+    elif re.search('date', command):
+        date = get_date()
+        response = random.choice(conversation_data["date"]).replace("{date}", date)
+        speak(response)
+        return response
 
     # Command: Tell time
     elif "time" in command:
-        time_c = obj.tell_time()
-        speak(f"The time is {time_c}")
-        return f"The time is {time_c}"
-
-    # Command: Greetings
-    elif command in GREETINGS:
-        response = random.choice(GREETINGS_RES)
+        time_c = get_time()
+        response = random.choice(conversation_data["time"]).replace("{time}", time_c)
         speak(response)
         return response
 
@@ -112,42 +107,29 @@ def handle_command(command):
         speak(f'Opening {domain}')
         return f'Opening {domain}'
 
-    # Command: Launch an application
-    elif re.search('launch', command):
-        dict_app = {'firefox': "C://Program Files//Mozilla Firefox//firefox.exe"}
-        app_name = command.split(' ', 1)[1]
-        path = dict_app.get(app_name)
-        if path:
-            speak(f'Launching {app_name}')
-            os.startfile(path)
-            return f'Launched {app_name}'
-        else:
-            speak('Application not found.')
-            return 'Application not found.'
-
     # Command: Search Google
     elif re.search('search google for', command):
-            # Extract search query
-            query = command.replace('search google for', '').strip()
-            results = google_search(query)  # Perform Google search
-            
-            # Create a formatted response
-            if results:
-                response = "Here are the top search results:"
-                for index, result in enumerate(results):
-                    response += f"\n{index + 1}. {result}"
-            else:
-                response = "No results found."
-            
-            speak(response)  # Speak the response
-            return response  # Return the response
+        query = command.replace('search google for', '').strip()
+        results = google_search(query)
+        
+        if results:
+            response = random.choice(conversation_data["search_google"]).replace("{query}", query)
+            response += "".join([f"\n{index + 1}. {result}" for index, result in enumerate(results)])
+        else:
+            response = "No results found."
+        
+        speak(response)
+        return response
+
     # Command: Exit or say goodbye
-    elif "goodbye" in command or "offline" in command or "bye" in command:
-        speak("Going offline. It was nice working with you!")
+    elif re.search(r'\b(goodbye|bye|offline)\b', command):
+        response = random.choice(conversation_data["farewell"])
+        speak(response)
         sys.exit()
 
+    # Unknown command
     else:
-        response = "I'm sorry, I didn't understand that command."
+        response = random.choice(conversation_data["unknown_command"])
         speak(response)
         return response
 
