@@ -49,7 +49,7 @@ def google_search(query):
 
 def get_weather(location):
     # Replace 'your_api_key' with your actual OpenWeatherMap API key
-    api_key = 'your_api_key'
+    api_key = 'ab365baf6721be32e96687c938d415bc'
     url = f"http://api.openweathermap.org/data/2.5/weather?q={location}&appid={api_key}&units=metric"
     response = requests.get(url)
     if response.ok:
