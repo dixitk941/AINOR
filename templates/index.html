@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A.I.N.O.R - Responsive UI</title>
+    <title>A.I.N.O.R - Fullscreen UI</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Responsive gradient background */
+        /* Fullscreen background with gradient */
         body {
             margin: 0;
             padding: 0;
@@ -16,65 +16,33 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
 
-        /* Chat container - adjusts based on screen size */
+        /* Chat container for full screen */
         .chat-container {
-            width: 90%;
-            max-width: 800px;
-            height: 80vh;
-            background-color: rgba(30, 30, 30, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            width: 100%;
+            height: 100%;
             display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        /* Messages area with scroll */
-        .messages {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding-right: 10px;
-            margin-bottom: 15px;
-        }
-
-        /* Message styles */
-        .message {
-            background-color: #252525;
-            color: #ddd;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            max-width: 70%;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .message.user {
-            align-self: flex-end;
-            background-color: #007BFF;
-        }
-
-        .message.assistant {
-            align-self: flex-start;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Input container for message input */
-        .input-container {
-            display: flex;
+            justify-content: center;
             align-items: center;
+            position: relative;
+        }
+
+        /* Floating centered input box */
+        .input-area {
             background-color: rgba(50, 50, 50, 0.9);
             border-radius: 30px;
-            padding: 10px 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            padding: 15px 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80%;
+            max-width: 600px;
         }
 
-        .input-container input {
+        .input-area input {
             flex-grow: 1;
             background-color: transparent;
             border: none;
@@ -83,11 +51,11 @@
             padding: 10px;
         }
 
-        .input-container input:focus {
+        .input-area input:focus {
             outline: none;
         }
 
-        .input-container button {
+        .input-area button {
             background-color: #28a745;
             border: none;
             border-radius: 30px;
@@ -97,45 +65,50 @@
             transition: background-color 0.3s;
         }
 
-        .input-container button:hover {
+        .input-area button:hover {
             background-color: #218838;
         }
 
-        /* Media queries for responsiveness */
+        /* Message below the input box */
+        .warning-text {
+            color: #f0f0f0;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Messages container - hidden in this design */
+        .messages {
+            display: none;
+        }
+
+        /* Media queries for responsive design */
         @media (max-width: 768px) {
-            .chat-container {
-                width: 95%;
-                height: 75vh;
+            .input-area {
+                padding: 10px 20px;
             }
 
-            .input-container button {
+            .input-area button {
                 padding: 8px 15px;
             }
 
-            .message {
-                font-size: 0.9rem;
-                padding: 10px;
+            .warning-text {
+                font-size: 0.8rem;
             }
         }
 
         @media (max-width: 480px) {
-            .chat-container {
-                height: 70vh;
-                padding: 15px;
-            }
-
-            .input-container {
+            .input-area {
                 padding: 8px 15px;
             }
 
-            .input-container button {
+            .input-area button {
                 padding: 6px 10px;
                 font-size: 0.85rem;
             }
 
-            .message {
-                font-size: 0.85rem;
-                padding: 8px;
+            .warning-text {
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -143,13 +116,14 @@
 <body>
 
 <div class="chat-container">
-    <!-- Messages area -->
-    <div class="messages" id="messageContainer"></div>
-
-    <!-- Input area -->
-    <div class="input-container">
-        <input type="text" id="userInput" placeholder="Ask AINOR something..." onkeypress="checkKey(event)">
-        <button id="sendBtn">Send</button>
+    <!-- Centered floating input area -->
+    <div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Ask AINOR something..." onkeypress="checkKey(event)">
+            <button id="sendBtn">Send</button>
+        </div>
+        <!-- Message below the input box -->
+        <p class="warning-text">AINOR can make mistakes. Check important info.</p>
     </div>
 </div>
 
@@ -168,23 +142,9 @@
         var input = document.getElementById('userInput').value;
         if (!input.trim()) return;
 
-        appendMessage(input, 'user');
+        // Simulate a message being sent and received
         document.getElementById('userInput').value = '';
-        simulateResponse();
-    }
-
-    function appendMessage(text, sender) {
-        const messageElem = document.createElement('div');
-        messageElem.className = 'message ' + sender;
-        messageElem.innerText = text;
-        document.getElementById('messageContainer').appendChild(messageElem);
-        document.getElementById('messageContainer').scrollTop = document.getElementById('messageContainer').scrollHeight;
-    }
-
-    function simulateResponse() {
-        setTimeout(() => {
-            appendMessage("AINOR's response...", 'assistant');
-        }, 1500);
+        console.log('Message sent:', input);
     }
 </script>
 
