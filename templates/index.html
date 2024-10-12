@@ -149,10 +149,14 @@
 <div class="input-area">
     <input type="text" id="userInput" placeholder="Ask AINOR something..." onkeypress="checkKey(event)">
     <button id="sendBtn">Send</button>
+    <button id="openModalBtn" class="ml-2 bg-blue-500 hover:bg-blue-400 p-2 rounded">Login</button>
 </div>
 
 <!-- Warning text below the input box -->
 <p class="warning-text">AINOR can make mistakes. Check important info.</p>
+
+<!-- Modal Container -->
+<div id="modalContainer"></div>
 
 <script>
     document.getElementById('sendBtn').onclick = function() {
@@ -185,6 +189,35 @@
         chatContainer.appendChild(messageDiv);
         chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the latest message
     }
+
+    // Load the login modal HTML
+    fetch('loginModal.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('modalContainer').innerHTML = data;
+
+            // Event listeners for modal
+            const openModalBtn = document.getElementById('openModalBtn');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const loginModal = document.getElementById('loginModal');
+
+            openModalBtn.onclick = function () {
+                loginModal.classList.remove('hidden');
+            };
+
+            closeModalBtn.onclick = function () {
+                loginModal.classList.add('hidden');
+            };
+
+            // Add login functionality here
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.onclick = function() {
+                // Implement your login logic
+                alert('Login button clicked!'); // Placeholder for actual login logic
+                loginModal.classList.add('hidden');
+            };
+        })
+        .catch(error => console.error('Error loading the modal:', error));
 </script>
 
 </body>
