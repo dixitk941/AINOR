@@ -27,13 +27,28 @@
     },
     {
       "category": "search_google",
-      "patterns": ["search google for", "google for", "find on google"],
+      "patterns": ["search google for", "google for", "find on google", "open google"],
       "responses": ["Here are the search results for {query}:", "I found this for you on Google:", "Check out these results for {query}:"]
     },
     {
       "category": "open_website",
       "patterns": ["open", "launch", "go to"],
       "responses": ["Opening {site}.", "Launching {site} for you.", "Taking you to {site}."]
+    },
+    {
+      "category": "weather",
+      "patterns": ["what's the weather", "tell me the weather", "current weather in {location}", "weather in {location}"],
+      "responses": ["The current weather in {location} is {weather}.", "It's {weather} in {location}.", "Currently, the weather in {location} is {weather}."]
+    },
+    {
+      "category": "location_time",
+      "patterns": ["what time is it in {location}", "time in {location}"],
+      "responses": ["The time in {location} is {time}.", "Currently, it's {time} in {location}."]
+    },
+    {
+      "category": "tasks",
+      "patterns": ["automate my tasks", "help me with my tasks"],
+      "responses": ["Sure! What tasks do you need help with?", "I'm here to assist you with your tasks. What do you need?"]
     },
     {
       "category": "jokes",
