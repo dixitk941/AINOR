@@ -1,3 +1,4 @@
+import os
 import requests
 from flask import Flask, render_template, request, jsonify
 import json
@@ -9,7 +10,7 @@ app = Flask(__name__)
 all_responses = []
 
 # Gemini API setup
-GEMINI_API_KEY = "AIzaSyCh87P6IHCR2TVINidnDifeybL3CqC_flQ"
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")  # Fetching the API key from environment variable
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
 def call_gemini_api(prompt):
