@@ -1,14 +1,6 @@
 [
     {
-        "prompt": "open google.com",
-        "response": "I am unable to open websites or perform actions in the real world. I am a language model, and my purpose is to provide information and complete tasks as instructed. \n\nIf you would like to open Google.com, you can do so by typing the URL into your web browser's address bar and pressing Enter."
-    },
-    {
         "prompt": "hii",
         "response": "Hi there! How can I help you today?"
-    },
-    {
-        "prompt": "who is your creator",
-        "response": "I am a large language model, trained by Google."
     }
 ]
