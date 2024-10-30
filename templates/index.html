@@ -147,44 +147,38 @@ body {
         transform: translateY(0);
     }
 }
-
 @media (max-width: 600px) {
     .branding {
         font-size: 1em;
-        padding: 8px 16px;
+        padding: 0.5em 1em;
     }
-
     .chat-container {
-        height: calc(100vh - 140px);
-        padding: 15px;
+        height: calc(100vh - 10em); /* Adjusted to account for branding and input areas */
+        padding: 1em;
+        overflow-y: auto; /* Ensure the chat container is scrollable */
     }
-
     .message {
         font-size: 0.9em;
-        padding: 10px;
+        padding: 0.5em;
     }
-
     .input-container {
-        margin-top: 15px;
+        margin-top: 1em;
+        padding: 1em; /* Added padding for better spacing */
     }
-
     #command {
-        padding: 10px;
+        padding: 1em;
         font-size: 0.9em;
     }
-
     #submit {
-        padding: 10px 15px;
+        padding: 1em 1.5em;
         font-size: 0.9em;
     }
-
     .disclaimer {
         font-size: 0.7em;
     }
-
     .copy-button {
         font-size: 0.7em;
-        padding: 4px 8px;
+        padding: 0.25em 0.5em;
     }
 }
 
@@ -236,6 +230,7 @@ body {
             <button id="submit">Send</button>
         </div>
         <div class="disclaimer">AINOR can make mistakes. Check important info.</div>
+        <hr class="divider">    
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
