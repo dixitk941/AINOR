@@ -28,7 +28,6 @@ def call_gemini_api(prompt):
         "contents": [{"parts": [{"text": prompt}]}]
     }
     
-    # Send the API request
     try:
         response = requests.post(
             f"{GEMINI_API_URL}?key={GEMINI_API_KEY}",
@@ -65,7 +64,7 @@ def call_gemini_api(prompt):
         logging.error(f"JSON decode error: {json_err}")
         return "Unexpected response format from Gemini API."
     except Exception as e:
-        logging.error(f"An unexpected error occurred: {e}")
+        logging.error(f"An unexpected error occurred: {e}", exc_info=True)
         return "An unexpected error occurred."
 
 # Function to log responses
