@@ -2,11 +2,9 @@ import requests
 from flask import Flask, render_template, request, jsonify
 import json
 import logging
+import re
 
 app = Flask(__name__)
-
-# Initialize a list to store all responses
-all_responses = []
 
 # Gemini API setup
 GEMINI_API_KEY = "AIzaSyCh87P6IHCR2TVINidnDifeybL3CqC_flQ"
@@ -17,7 +15,9 @@ def call_gemini_api(prompt):
         "Content-Type": "application/json"
     }
     data = {
-        "contents": [{"parts": [{"text": prompt}]}]
+        "prompt": {
+            "text": prompt
+        }
     }
     
     # Send the API request
@@ -29,33 +29,18 @@ def call_gemini_api(prompt):
 
     if response.ok:
         try:
-            # Inspect response JSON structure
             response_json = response.json()
-            print("API Response:", response_json)  # Debugging line to check response structure
+            logging.debug(f"API Response: {response_json}")  # Log the full response for debugging
             
-            # Extract the relevant text based on the provided structure
             gemini_response = response_json.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "No response text").strip()
             
-            # Log the response
-            log_response(prompt, gemini_response)
-            
             return gemini_response
-        except (KeyError, IndexError):
-            logging.error("Unexpected response format from Gemini API.")
+        except (KeyError, IndexError) as e:
+            logging.error(f"Unexpected response format from Gemini API: {e}")
             return "Unexpected response format from Gemini API."
     else:
         logging.error(f"Gemini API error: {response.status_code} {response.text}")
         return "I'm having trouble connecting to the Gemini API."
-
-
-# Function to log responses
-def log_response(prompt, response_text):
-    response_data = {"prompt": prompt, "response": response_text}
-    all_responses.append(response_data)
-    
-    # Optionally, write responses to a JSON file for persistence
-    with open('gemini_responses.json', 'w') as file:
-        json.dump(all_responses, file, indent=4)
 
 @app.route('/')
 def index():
@@ -65,7 +50,20 @@ def index():
 def process_command():
     command = request.json.get('command', '').lower()
     response = call_gemini_api(command)
-    return jsonify({'response': response})
+    
+    # Extract text and code from response
+    code_snippet = None
+    response_text = response
+    code_match = re.search(r"'''([\s\S]*?)'''", response_text)
+
+    if code_match:
+        # Extract code snippet
+        code_snippet = code_match.group(1)
+        # Remove code snippet from response text
+        response_text = response_text.replace(code_match.group(0), '').strip()
+
+    return jsonify({'response': response_text, 'code': code_snippet})
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     app.run(debug=True, port=5001)
