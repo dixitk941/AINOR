@@ -16,34 +16,5 @@
             "src": "/(.*)",
             "dest": "/app.py"
         }
-    ],
-    "env": {
-        "GEMINI_API_KEY": "@gemini_api_key"
-    },
-    "functions": {
-        "app.py": {
-            "runtime": "python3.9",
-            "memory": 512,
-            "maxDuration": 10
-        }
-    },
-    "headers": [
-        {
-            "source": "/(.*)",
-            "headers": [
-                {
-                    "key": "Access-Control-Allow-Origin",
-                    "value": "*"
-                },
-                {
-                    "key": "Access-Control-Allow-Headers",
-                    "value": "Content-Type, Authorization"
-                },
-                {
-                    "key": "Cache-Control",
-                    "value": "public, max-age=0, must-revalidate"
-                }
-            ]
-        }
     ]
 }
