@@ -3,272 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A.I.N.O.R - Chat UI</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>A.I.N.O.R - Voice Assistant</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <style>
-        /* Fullscreen background with gradient */
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #131313, #1a1a1a);
-            height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
         }
 
-        /* Chat container takes up most of the screen */
-        .chat-container {
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #2c2c2c;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             flex-grow: 1;
             overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
         }
 
-        /* Chat messages */
-        .message {
-            width: 80%;
-            max-width: 600px;
-            background-color: #3a3a3a;
-            color: white;
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2em;
+            font-weight: 300;
+        }
+
+        #response {
+            margin-top: 20px;
             padding: 15px;
             border-radius: 10px;
-            margin-bottom: 10px;
+            background-color: #3a3a3a;
+            width: 100%;
             word-wrap: break-word;
+            font-size: 1em;
+            position: relative;
         }
 
-        .message.user {
-            background-color: #28a745;
-            align-self: flex-end;
-        }
-
-        .message.ainor {
-            background-color: #3e3e3e;
-            align-self: flex-start;
-        }
-
-        /* Input box at the bottom */
-        .input-area {
-            background-color: rgba(50, 50, 50, 0.9);
-            border-radius: 30px;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            max-width: 100vw;
-            position: fixed;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-            margin: 0 auto;
-        }
-
-        .input-area input {
-            flex-grow: 1;
-            background-color: transparent;
-            border: none;
-            color: white;
-            font-size: 1rem;
+        #code {
+            margin-top: 10px;
+            background-color: #2d2d2d;
             padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
         }
 
-        .input-area input:focus {
-            outline: none;
-        }
-
-        .input-area button {
-            background-color: #28a745;
+        #copyButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
             border: none;
-            border-radius: 30px;
-            color: white;
-            padding: 10px 20px;
-            margin-left: 15px;
-            transition: background-color 0.3s;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4a4a4a;
+            color: #ffffff;
+            font-size: 0.8em;
         }
 
-        .input-area button:hover {
-            background-color: #218838;
-        }
-
-        /* Message below the input box */
-        .warning-text {
-            color: #f0f0f0;
-            margin-top: 5px;
-            font-size: 0.8rem;
-            text-align: center;
-            position: fixed;
-            bottom: 5px;
+        .input-container {
             width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #2c2c2c;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
-        /* A.I.N.O.R branding */
-        .branding {
-            position: absolute;
-            top: 20px;
-            left: 20px; /* Changed to left */
-            color: white;
-            font-size: 1.5rem;
-            font-weight: bold;
+        #command {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 25px;
+            outline: none;
+            background-color: #3a3a3a;
+            color: #ffffff;
+            font-size: 1em;
         }
 
-        /* Profile Picture */
-        .profile-pic {
-            position: absolute;
-            top: 20px;
-            right: 20px; /* Position for profile picture */
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            object-fit: cover;
+        #buttons {
+            display: flex;
+            gap: 10px;
         }
 
-        /* Media queries for responsiveness */
-        @media (max-width: 768px) {
-            .input-area {
-                padding: 10px 20px;
-            }
+        button {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            background-color: #3a3a3a;
+            color: #ffffff;
+            font-size: 1em;
+            transition: background-color 0.3s, transform 0.3s;
+        }
 
-            .input-area button {
-                padding: 8px 15px;
-            }
-
-            .warning-text {
-                font-size: 0.7rem;
-            }
-
-            .branding {
-                font-size: 1.2rem;
-            }
-
-            .profile-pic {
-                width: 35px;
-                height: 35px;
-            }
+        button:hover {
+            background-color: #4a4a4a;
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>A.I.N.O.R Voice Assistant</h1>
+        <div id="response">
+            <div id="textResponse"></div>
+            <pre id="code" class="language-javascript"></pre>
+            <button id="copyButton" onclick="copyCode()">Copy Code</button>
+        </div>
+    </div>
+    <div class="input-container">
+        <input type="text" id="command" placeholder="Enter your command...">
+        <div id="buttons">
+            <button id="submit">Send Command</button>
+        </div>
+    </div>
 
-<!-- A.I.N.O.R Branding -->
-<div class="branding">A.I.N.O.R</div>
-<img id="profilePic" class="profile-pic hidden" src="" alt="Profile Picture">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+    <script>
+        document.getElementById('submit').onclick = function() {
+            var command = document.getElementById('command').value;
+            processCommand(command);
+        };
 
-<!-- Chat Container -->
-<div class="chat-container" id="chatContainer">
-    <!-- Messages will appear here -->
-</div>
+        function processCommand(command) {
+            fetch('/process_command', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ command: command })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Clear previous response
+                document.getElementById('textResponse').innerText = '';
+                document.getElementById('code').innerText = '';
+                
+                // Extract text and code from response
+                const responseText = data.response;
+                const codeMatch = responseText.match(/'''([\s\S]*?)'''/);
 
-<!-- Input Area fixed at the bottom -->
-<div class="input-area">
-    <input type="text" id="userInput" placeholder="Ask AINOR something..." onkeypress="checkKey(event)">
-    <button id="sendBtn">Send</button>
-    <button id="openModalBtn" class="ml-2 bg-blue-500 hover:bg-blue-400 p-2 rounded">Login</button>
-</div>
+                if (codeMatch) {
+                    // Display code snippet
+                    const codeSnippet = codeMatch[1];
+                    document.getElementById('code').innerText = codeSnippet;
+                    Prism.highlightElement(document.getElementById('code'));
 
-<!-- Warning text below the input box -->
-<p class="warning-text">AINOR can make mistakes. Check important info.</p>
+                    // Display text response without code snippet
+                    const textResponse = responseText.replace(codeMatch[0], '').trim();
+                    document.getElementById('textResponse').innerText = textResponse;
+                } else {
+                    // Display only text response
+                    document.getElementById('textResponse').innerText = responseText;
+                }
 
-<!-- Modal Container -->
-<div id="modalContainer"></div>
-
-<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js"></script>
-<script>
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
-    
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    // Google sign-in
-    function googleSignIn() {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).then((result) => {
-            const user = result.user;
-            document.getElementById('profilePic').src = user.photoURL; // Fetch the profile picture
-            document.getElementById('profilePic').classList.remove('hidden'); // Show the profile picture
-            console.log('User info: ', user); // Optional: Log user info
-            // Close the login modal here after successful login
-            const loginModal = document.getElementById('loginModal');
-            loginModal.classList.add('hidden');
-        }).catch((error) => {
-            console.error('Error during sign in:', error);
-        });
-    }
-
-    // Add event listeners for buttons
-    document.getElementById('openModalBtn').onclick = function () {
-        document.getElementById('loginModal').classList.remove('hidden');
-    };
-
-    // Load the login modal HTML
-    fetch('loginModal.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('modalContainer').innerHTML = data;
-
-            // Event listeners for modal
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            closeModalBtn.onclick = function () {
-                document.getElementById('loginModal').classList.add('hidden');
-            };
-
-            // Add login functionality here
-            const googleLoginBtn = document.getElementById('googleLoginBtn');
-            googleLoginBtn.onclick = function () {
-                googleSignIn(); // Trigger Google Sign-In
-            };
-        })
-        .catch(error => console.error('Error loading the modal:', error));
-
-    document.getElementById('sendBtn').onclick = function() {
-        sendMessage();
-    };
-
-    function checkKey(event) {
-        if (event.key === "Enter") {
-            sendMessage();
+                // Clear input
+                document.getElementById('command').value = '';
+            });
         }
-    }
 
-    function sendMessage() {
-        var input = document.getElementById('userInput').value;
-        if (!input.trim()) return;
-
-        appendMessage(input, 'user');
-        setTimeout(() => appendMessage('This is a response from AINOR.', 'ainor'), 1000);
-
-        document.getElementById('userInput').value = ''; // Clear input after sending
-    }
-
-    function appendMessage(message, sender) {
-        const chatContainer = document.getElementById('chatContainer');
-
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${sender}`;
-        messageDiv.innerText = message;
-
-        chatContainer.appendChild(messageDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the latest message
-    }
-
-    // Show the login modal on first load
-    window.onload = function() {
-        document.getElementById('loginModal').classList.remove('hidden');
-    };
-</script>
-
+        function copyCode() {
+            var code = document.getElementById('code').innerText;
+            navigator.clipboard.writeText(code).then(function() {
+                alert('Code copied to clipboard!');
+            }, function(err) {
+                alert('Failed to copy code: ', err);
+            });
+        }
+    </script>
 </body>
 </html>
