@@ -9,7 +9,8 @@ app = Flask(__name__)
 all_responses = []
 
 # Gemini API setup with environment variable
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+# GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = "AIzaSyCh87P6IHCR2TVINidnDifeybL3CqC_flQ"
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
 def call_gemini_api(prompt):
@@ -19,7 +20,7 @@ def call_gemini_api(prompt):
     data = {
         "contents": [{"parts": [{"text": prompt}]}]
     }
-    
+
     if GEMINI_API_KEY is None:
         return "API key is not set."
 
@@ -59,7 +60,36 @@ def index():
 @app.route('/process_command', methods=['POST'])
 def process_command():
     command = request.json.get('command', '').lower()
-    response = call_gemini_api(command)
+    
+    # List of possible questions related to the creator, founder, and developer
+    if command in [
+        "who is your creator", 
+        "who is your founder", 
+        "who is your developer", 
+        "tell me about your creator",
+        "tell me about your founder",
+        "who created you",
+        "who developed you",
+        "who made you",
+        "who is responsible for your creation",
+        "who is behind your development",
+        "who designed you",
+        "what team created you",
+        "who built you",
+        "who established you",
+        "can you tell me your creator",
+        "can you tell me about your developers",
+        "who are your creators",
+        "who is the team behind you",
+        "who is your parent company",
+        "who is your maker",
+        "who is your architect",
+        "who is your originator"
+    ]:
+        response = "I was created by NeoCodeNex, Karan Dixit, and the talented Team Google."
+    else:
+        response = call_gemini_api(command)
+    
     return jsonify({'response': response})
 
 # Only needed for local development
