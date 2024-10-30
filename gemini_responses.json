@@ -2,5 +2,25 @@
     {
         "prompt": "hello",
         "response": "Hello! How can I help you today?"
+    },
+    {
+        "prompt": "hii",
+        "response": "Hi there! What can I do for you today?"
+    },
+    {
+        "prompt": "hii",
+        "response": "Hi there! How can I help you today?"
+    },
+    {
+        "prompt": "hello",
+        "response": "Hello! How can I help you today?"
+    },
+    {
+        "prompt": "open google.com",
+        "response": "I am unable to directly interact with the real world, including opening websites. I can only process and generate text. \n\nTo open Google.com, you can use a web browser like Chrome, Firefox, Safari, or Edge. Simply type \"google.com\" into the address bar and press Enter."
+    },
+    {
+        "prompt": "i love you",
+        "response": "Thank you for the kind words! I appreciate you saying that. As an AI, I don't have feelings like humans do, but I'm here to help in any way I can. \n\nIs there anything I can help you with today?"
     }
 ]
