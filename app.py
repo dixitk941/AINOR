@@ -22,84 +22,26 @@ logging.basicConfig(level=logging.DEBUG)
 with open('conversation.json') as f:
     conversation_data = json.load(f)
 
-# ===================================== HELPER FUNCTIONS ==============================================
+# Gemini API setup
+GEMINI_API_KEY ="AIzaSyCh87P6IHCR2TVINidnDifeybL3CqC_flQ"
+GEMINI_API_URL = "https://api.google.com/gemini/v1/models/gemini"
 
-def get_time(location=None):
-    if location:
-        response = requests.get(f"http://worldtimeapi.org/api/timezone/{location}")
-        if response.ok:
-            time_data = response.json()
-            return time_data['datetime']
-    return obj.tell_time()
-
-def get_date():
-    return obj.tell_me_date()
-
-def google_search(query):
-    results = []
-    try:
-        for j in search(query, num_results=5):
-            results.append(j)
-        if not results:
-            raise Exception("No results found.")
-    except Exception as e:
-        logging.error(f"Error during Google search: {e}")
-        return []
-    return results
-
-def get_weather(location):
-    api_key = 'ab365baf6721be32e96687c938d415bc'  # Replace with your OpenWeatherMap API key
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={location}&appid={api_key}&units=metric"
-    response = requests.get(url)
+def call_gemini_api(prompt):
+    headers = {
+        "Authorization": f"Bearer {GEMINI_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "model": "gemini-1",
+        "prompt": prompt,
+        "max_tokens": 150
+    }
+    response = requests.post(GEMINI_API_URL, headers=headers, json=data)
     if response.ok:
-        weather_data = response.json()
-        temp = weather_data['main']['temp']
-        description = weather_data['weather'][0]['description']
-        return f"{description} at {temp}°C"
-    return "I'm unable to retrieve the weather information."
-
-def analyze_code(code):
-    try:
-        tree = ast.parse(code)
-        return "No syntax errors found."  # If the code parses without error
-    except SyntaxError as e:
-        return f"Syntax error: {e.msg} at line {e.lineno}, column {e.offset}"
-    except Exception as e:
-        return f"An error occurred: {str(e)}"
-
-def generate_code(task):
-    """Generate code snippets based on the given task."""
-    if "calculate factorial" in task:
-        return """def factorial(n):
-    if n == 0:
-        return 1
+        return response.json().get("choices")[0].get("text").strip()
     else:
-        return n * factorial(n-1)
-
-# Example usage
-print(factorial(5))  # Output: 120"""
-    
-    elif "reverse a string" in task:
-        return """def reverse_string(s):
-    return s[::-1]
-
-# Example usage
-print(reverse_string("Hello"))  # Output: "olleH"
-"""
-    
-    elif "check if a number is prime" in task:
-        return """def is_prime(n):
-    if n <= 1:
-        return False
-    for i in range(2, int(n**0.5) + 1):
-        if n % i == 0:
-            return False
-    return True
-
-# Example usage
-print(is_prime(11))  # Output: True"""
-    
-    return "Sorry, I can't generate code for that task."
+        logging.error(f"Gemini API error: {response.status_code} {response.text}")
+        return "I'm having trouble connecting to the Gemini API."
 
 # ======================================= ROUTES =====================================================
 
@@ -116,16 +58,12 @@ def process_command():
 # =================================== COMMAND HANDLER ================================================
 
 def handle_command(command):
-    # Check for code analysis request
-    if command.startswith("analyze code"):
-        code = command.replace("analyze code", "").strip()
-        return analyze_code(code)
+    # Directly call Gemini API for natural language processing
+    if "analyze" in command or "generate" in command or "weather" in command:
+        prompt = f"Respond to this command: {command}"
+        return call_gemini_api(prompt)
     
-    # Check for code generation request
-    if command.startswith("generate code for"):
-        task = command.replace("generate code for", "").strip()
-        return generate_code(task)
-
+    # Fall back to predefined responses for other commands
     for entry in conversation_data["commands"]:
         for pattern in entry["patterns"]:
             if pattern == "*" or re.search(pattern, command):
@@ -133,12 +71,12 @@ def handle_command(command):
                     time_c = get_time()
                     response = random.choice(entry["responses"]).replace("{time}", time_c)
                     return response
-                
+
                 elif entry["category"] == "date":
                     date = get_date()
                     response = random.choice(entry["responses"]).replace("{date}", date)
                     return response
-                
+
                 elif entry["category"] == "search_google":
                     query = command.replace('search google for', '').strip()
                     results = google_search(query)
@@ -148,7 +86,7 @@ def handle_command(command):
                     else:
                         response = "No results found."
                     return response
-                
+
                 elif entry["category"] == "weather":
                     location = re.search(r'in (\w+)', command)
                     if location:
@@ -158,7 +96,7 @@ def handle_command(command):
                         return response
                     else:
                         return "Please provide a location to check the weather."
-                
+
                 elif entry["category"] == "location_time":
                     location = re.search(r'in (\w+)', command)
                     if location:
@@ -174,10 +112,10 @@ def handle_command(command):
                     response = random.choice(entry["responses"]).replace("{site}", domain)
                     obj.website_opener(domain)
                     return response
-                
+
                 elif entry["category"] == "tasks":
                     return random.choice(entry["responses"])
-                
+
                 else:
                     return random.choice(entry["responses"])
 
