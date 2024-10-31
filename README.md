@@ -45,7 +45,7 @@ AINOR is developed using a combination of programming languages and technologies
 3. **Run AINOR**:
    - Start the server by executing:
      ```bash
-     python main.py
+     python app.py
      ```
 
 4. **Access the App**:
