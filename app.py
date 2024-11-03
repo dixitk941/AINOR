@@ -10,7 +10,7 @@ all_responses = []
 
 # Gemini API setup with environment variable
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-#GEMINI_API_KEY = "AIzaSyCh87P6IHCR2TVINidnDeybL3CqC_flQ"
+# GEMINI_API_KEY = "AIzaSyCh87PHCR2TVINidnDifeybL3CqC_flQ"
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
 def call_gemini_api(prompt):
@@ -87,6 +87,19 @@ def process_command():
         "who is your originator"
     ]:
         response = "I was created by NeoCodeNex, Karan Dixit, and the talented Team Google."
+    elif command in [
+        "what is your name", 
+        "tell me your name", 
+        "who are you", 
+        "what's your full name",
+        "do you have a name",
+        "can you tell me your name",
+        "what should I call you",
+        "who am i talking to",
+        "are you ainor",
+        "your name"
+    ]:
+        response = "My name is AINOR, which stands for Artificial Intelligence Natural Optimization Resource."
     else:
         response = call_gemini_api(command)
     
