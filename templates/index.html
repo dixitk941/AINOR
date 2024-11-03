@@ -236,106 +236,111 @@ body {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
     <script>
-        document.getElementById('submit').onclick = function() {
-            var command = document.getElementById('command').value;
-            addMessage(command, 'user');
-            processCommand(command);
+       document.getElementById('submit').onclick = function() {
+    var command = document.getElementById('command').value;
+    addMessage(command, 'user');
+    processCommand(command);
+};
+
+document.getElementById('command').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        document.getElementById('submit').click();
+    }
+});
+
+function addMessage(text, sender) {
+    const message = document.createElement('div');
+    message.className = `message ${sender}`;
+    message.innerHTML = formatMessage(text);
+    document.getElementById('chatContainer').appendChild(message);
+    document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
+}
+
+function formatMessage(text) {
+    // Replace **text** with <strong>text</strong>
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    // Replace ```language code ``` with <pre><code>code</code></pre>
+    text = text.replace(/```(\w+)\s*([\s\S]*?)\s*```/g, function(match, lang, code) {
+        const pre = document.createElement('pre');
+        const codeElement = document.createElement('code');
+        codeElement.className = `language-${lang}`;
+        codeElement.textContent = code;
+        pre.appendChild(codeElement);
+        Prism.highlightElement(codeElement);
+
+        const copyButton = document.createElement('button');
+        copyButton.className = 'copy-button';
+        copyButton.innerText = 'Copy';
+        copyButton.onclick = function() {
+            navigator.clipboard.writeText(code).then(function() {
+                alert('Code copied to clipboard!');
+            }, function(err) {
+                alert('Failed to copy code: ', err);
+            });
         };
+        pre.appendChild(copyButton);
 
-        document.getElementById('command').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                document.getElementById('submit').click();
-            }
-        });
+        return pre.outerHTML;
+    });
 
-        function addMessage(text, sender) {
-            const message = document.createElement('div');
-            message.className = `message ${sender}`;
-            message.innerHTML = formatMessage(text);
-            document.getElementById('chatContainer').appendChild(message);
-            document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
+    // Replace * bullet points with <ul><li> items
+    text = text.replace(/(?:^|\n)\* (.*?)(?=\n|$)/g, '<ul><li>$1</li></ul>');
+
+    return text;
+}
+
+function processCommand(command) {
+    fetch('/process_command', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ command: command })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Clear input
+        document.getElementById('command').value = '';
+
+        // Create message elements
+        const textResponse = data.response;
+        const codeSnippet = data.code;
+
+        if (textResponse) {
+            addMessage(textResponse, 'ai');
         }
 
-        function formatMessage(text) {
-            // Replace **text** with <strong>text</strong>
-            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        if (codeSnippet) {
+            const codeMessage = document.createElement('pre');
+            codeMessage.className = 'message code ai language-javascript';
+            codeMessage.innerText = codeSnippet;
+            document.getElementById('chatContainer').appendChild(codeMessage);
+            Prism.highlightElement(codeMessage);
 
-            // Replace ```language code ``` with <pre><code>code</code></pre>
-            text = text.replace(/```(\w+)\s*([\s\S]*?)\s*```/g, function(match, lang, code) {
-                const pre = document.createElement('pre');
-                const codeElement = document.createElement('code');
-                codeElement.className = `language-${lang}`;
-                codeElement.textContent = code;
-                pre.appendChild(codeElement);
-                Prism.highlightElement(codeElement);
-
-                const copyButton = document.createElement('button');
-                copyButton.className = 'copy-button';
-                copyButton.innerText = 'Copy';
-                copyButton.onclick = function() {
-                    navigator.clipboard.writeText(code).then(function() {
-                        alert('Code copied to clipboard!');
-                    }, function(err) {
-                        alert('Failed to copy code: ', err);
-                    });
-                };
-                pre.appendChild(copyButton);
-
-                return pre.outerHTML;
-            });
-
-            return text;
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-button';
+            copyButton.innerText = 'Copy';
+            copyButton.onclick = function() {
+                navigator.clipboard.writeText(codeSnippet).then(function() {
+                    alert('Code copied to clipboard!');
+                }, function(err) {
+                    alert('Failed to copy code: ', err);
+                });
+            };
+            codeMessage.appendChild(copyButton);
         }
 
-        function processCommand(command) {
-            fetch('/process_command', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ command: command })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Clear input
-                document.getElementById('command').value = '';
-
-                // Create message elements
-                const textResponse = data.response;
-                const codeSnippet = data.code;
-
-                if (textResponse) {
-                    addMessage(textResponse, 'ai');
-                }
-
-                if (codeSnippet) {
-                    const codeMessage = document.createElement('pre');
-                    codeMessage.className = 'message code ai language-javascript';
-                    codeMessage.innerText = codeSnippet;
-                    document.getElementById('chatContainer').appendChild(codeMessage);
-                    Prism.highlightElement(codeMessage);
-
-                    const copyButton = document.createElement('button');
-                    copyButton.className = 'copy-button';
-                    copyButton.innerText = 'Copy';
-                    copyButton.onclick = function() {
-                        navigator.clipboard.writeText(codeSnippet).then(function() {
-                            alert('Code copied to clipboard!');
-                        }, function(err) {
-                            alert('Failed to copy code: ', err);
-                        });
-                    };
-                    codeMessage.appendChild(copyButton);
-                }
-
-                // Scroll to the bottom of the chat container
-                document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
+        // Scroll to the bottom of the chat container
+        document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
     </script>
+</body>
+</html>    </script>
 </body>
 </html>
