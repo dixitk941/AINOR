@@ -33,7 +33,7 @@ AINOR is developed using a combination of programming languages and technologies
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/username/ainor.git
+   git clone https://github.com/dixitk941/ainor.git
    ```
 2. **Install Dependencies**:
    - Ensure Python and necessary libraries are installed.
@@ -49,7 +49,7 @@ AINOR is developed using a combination of programming languages and technologies
      ```
 
 4. **Access the App**:
-   - Open your web browser and navigate to [http://localhost:8000](http://localhost:8000).
+   - Open your web browser and navigate to [http://localhost:5000](http://localhost:5000).
 
 ## Contributions
 
