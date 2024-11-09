@@ -10,7 +10,6 @@ all_responses = []
 
 # Gemini API setup with environment variable
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-# GEMINI_API_KEY = "AIzaSyCh87PHCR2TVINidnDifeybL3CqC_flQ"
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
 def call_gemini_api(prompt):
