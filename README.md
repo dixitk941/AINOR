@@ -7,7 +7,7 @@ AINOR is an intelligent assistant designed to provide optimal solutions across v
 
 **AINOR** stands for **Artificial Intelligence Natural Optimization Resource**. This project focuses on utilizing AI to streamline processes, offering solutions that are adaptive and resource-efficient. Whether it's data analysis, task automation, or personalized support, AINOR delivers a cohesive experience powered by machine learning and AI-driven logic.
 
-Try out AINOR here: [chat-ainor.vercel.app](https://chat-ainor.vercel.app)
+Try out AINOR here: [ainor.vercel.app](https://ainor.vercel.app)
 
 ## Features
 
