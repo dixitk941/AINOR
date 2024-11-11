@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A.I.N.O.R - Voice Assistant</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" rel="stylesheet" />
     <style>
-        /* Resetting margins and paddings */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
-        /* General styling */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #121212;
@@ -25,7 +24,6 @@
             overflow: hidden;
         }
 
-        /* Initial welcome screen */
         #initialWindow {
             display: flex;
             flex-direction: column;
@@ -73,7 +71,6 @@
             background-color: #1D6FE5;
         }
 
-        /* Main container */
         #appContainer {
             display: flex;
             width: 100%;
@@ -86,7 +83,6 @@
             animation: fadeIn 0.5s ease-out;
         }
 
-        /* Sidebar styling */
         #sidebar {
             display: flex;
             flex-direction: column;
@@ -117,7 +113,6 @@
             background-color: #3D8DFF;
         }
 
-        /* Chat area */
         #mainContent {
             flex-grow: 1;
             display: flex;
@@ -145,7 +140,6 @@
             border-radius: 4px;
         }
 
-        /* Message bubbles */
         .message {
             max-width: 80%;
             padding: 12px 16px;
@@ -170,7 +164,6 @@
             border-top-left-radius: 0;
         }
 
-        /* Input area */
         .input-container {
             display: flex;
             padding: 10px;
@@ -204,23 +197,35 @@
             background-color: #1D6FE5;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            #sidebar {
-                display: none;
-            }
-            #appContainer {
-                flex-direction: column;
-                height: 100vh;
-                max-width: 100%;
-            }
-            #header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 10px;
-                background-color: #2A2A2A;
-            }
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap; /* Allows wrapping of long lines */
+            word-wrap: break-word; /* Breaks long words */
+            margin-bottom: 10px; /* Adds space below the code block */
+        }
+
+        code {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+        }
+
+        button {
+            margin-top: 5px;
+            background-color: #3D8DFF;
+            color: #FFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #1D6FE5;
         }
     </style>
 </head>
@@ -249,7 +254,7 @@
         <div id="mainContent">
             <div class="chat-container" id="chatContainer"></div>
             <div class="input-container">
-                <input type="text" id="command" placeholder="Type a message...">
+                <textarea id="command" placeholder="Type a message..." rows="3"></textarea>
                 <button id="submit"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
@@ -259,7 +264,7 @@
         function displayMessage(text, sender) {
             const messageElement = document.createElement('div');
             messageElement.classList.add('message', sender === 'user' ? 'user' : 'ai');
-            messageElement.innerText = text;
+            messageElement.innerHTML = parseFormatting(text);
             document.getElementById('chatContainer').appendChild(messageElement);
             document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
         }
@@ -303,6 +308,68 @@
                 displayMessage("I'm having trouble reaching the server.", 'ai');
             }
         }
+        async function fetchData() {
+        try {
+            const response = await fetch('your-api-endpoint');
+            const data = await response.json();
+            const formattedResponse = parseFormatting(data.response);
+            displayMessage(formattedResponse, 'ai');
+            document.getElementById('command').value = '';
+        } catch (error) {
+            console.error('Error:', error);
+            displayMessage("I'm having trouble reaching the server.", 'ai');
+        }
+    }
+
+    function parseFormatting(text) {
+        // Escape HTML characters
+        const escapeHtml = (unsafe) => {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        };
+
+        // Parse and apply markdown formatting (bold, italic, underline, bullet points, code blocks)
+        let formattedText = text
+            .replace(/```(.*?)```/gs, (match, p1) => {
+                return `<pre><code>${escapeHtml(p1)}</code><button onclick="copyToClipboard(this)">Copy</button></pre>`;
+            }) // Code blocks
+            .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')                 // Bold
+            .replace(/\*(.*?)\*/g, '<i>$1</i>')                     // Italic
+            .replace(/__(.*?)__/g, '<u>$1</u>');                    // Underline
+
+        // Handle bullet points
+        const bulletPoints = formattedText.split('\n').map(line => {
+            if (line.startsWith('* ')) {
+                return `<li>${line.substring(2)}</li>`;
+            }
+            return line;
+        }).join('\n');
+
+        // Wrap bullet points in <ul> tags
+        if (bulletPoints.includes('<li>')) {
+            formattedText = `<ul>${bulletPoints}</ul>`;
+        }
+
+        return formattedText;
+    }
+
+    function copyToClipboard(button) {
+        const codeBlock = button.previousElementSibling;
+        const textArea = document.createElement('textarea');
+        textArea.value = codeBlock.textContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        button.textContent = 'Copied!';
+        setTimeout(() => {
+            button.textContent = 'Copy';
+        }, 2000);
+    }
     </script>
 </body>
 </html>
