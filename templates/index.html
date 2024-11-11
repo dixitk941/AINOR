@@ -3,230 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Command Executor</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <title>A.I.N.O.R - Voice Assistant</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1a202c;
-            color: white;
+        /* Resetting margins and paddings */
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+        }
+
+        /* General styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #ECECEC;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Initial welcome screen */
+        #initialWindow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            background-color: #1A1A1A;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        #initialWindow h1 {
+            color: #ECECEC;
+            margin-bottom: 10px;
+        }
+
+        #initialWindow input, #initialSubmit {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            margin-top: 10px;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        #initialWindow input {
+            background-color: #333;
+            color: #ECECEC;
+        }
+
+        #initialSubmit {
+            background-color: #3D8DFF;
+            color: #FFF;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #initialSubmit:hover {
+            background-color: #1D6FE5;
+        }
+
+        /* Main container */
+        #appContainer {
+            display: flex;
+            width: 100%;
+            max-width: 800px;
+            height: 80vh;
+            background-color: #1A1A1A;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Sidebar styling */
+        #sidebar {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            background-color: #2A2A2A;
+            width: 200px;
+            color: #ECECEC;
+        }
+
+        #sidebar h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .quick-command {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quick-command:hover {
+            background-color: #3D8DFF;
+        }
+
+        /* Chat area */
+        #mainContent {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .chat-container {
-            max-height: 50vh;
+            flex-grow: 1;
+            padding: 20px;
             overflow-y: auto;
-            position: fixed;
-            bottom: 80px;
-            left: 0;
-            right: 0;
-            padding: 1rem;
-            background-color: #2d3748;
-            z-index: 10;
-        }
-
-        .message.user {
-            text-align: right;
-            background-color: #3182ce;
-            padding: 0.5rem 1rem;
-            border-radius: 10px;
-            margin: 10px 0;
-            max-width: 80%;
-            word-wrap: break-word;
-        }
-
-        .message.ai {
-            text-align: left;
-            background-color: #4a5568;
-            padding: 0.5rem 1rem;
-            border-radius: 10px;
-            margin: 10px 0;
-            max-width: 80%;
-            word-wrap: break-word;
-        }
-
-        .welcome-line {
-            padding-top: 30px;
-            padding-bottom: 10px;
-            text-align: center;
-            font-size: 1.5rem;
-        }
-
-        .commands {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-top: 20px;
-            text-align: center;
+            scrollbar-width: thin;
+            scrollbar-color: #3D8DFF #2A2A2A;
         }
 
+        .chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background-color: #3D8DFF;
+            border-radius: 4px;
+        }
+
+        /* Message bubbles */
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            font-size: 1rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+            transition: transform 0.3s;
+        }
+
+        .user {
+            align-self: flex-end;
+            background-color: #3D8DFF;
+            color: #FFF;
+            border-top-right-radius: 0;
+        }
+
+        .ai {
+            align-self: flex-start;
+            background-color: #2A2A2A;
+            color: #ECECEC;
+            border-top-left-radius: 0;
+        }
+
+        /* Input area */
         .input-container {
             display: flex;
-            justify-content: center;
+            padding: 10px;
+            background-color: #282828;
+            border-top: 1px solid #333;
             gap: 10px;
-            margin-top: 20px;
+            align-items: center;
         }
 
-        .input-container input {
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            width: 60%;
-            background-color: #2d3748;
-            color: white;
+        #command {
+            flex-grow: 1;
+            padding: 12px;
             border: none;
-            font-size: 1rem;
+            border-radius: 5px;
+            background-color: #333;
+            color: #ECECEC;
+            outline: none;
         }
 
-        .input-container button {
-            padding: 0.75rem 1.5rem;
-            background-color: #3182ce;
-            color: white;
-            border-radius: 0.5rem;
+        #submit {
+            padding: 12px;
+            background-color: #3D8DFF;
+            color: #FFF;
             border: none;
-            cursor: pointer;
-        }
-
-        .input-container button:hover {
-            background-color: #2b6cb0;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .fixed-bottom {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 20;
-        }
-
-        .copy-button {
-            background-color: #4A90E2;
-            color: white;
-            padding: 5px 10px;
-            margin-left: 10px;
             border-radius: 5px;
             cursor: pointer;
+            transition: background 0.3s;
         }
 
-        .copy-button:hover {
-            background-color: #357ABD;
+        #submit:hover {
+            background-color: #1D6FE5;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #sidebar {
+                display: none;
+            }
+            #appContainer {
+                flex-direction: column;
+                height: 100vh;
+                max-width: 100%;
+            }
+            #header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px;
+                background-color: #2A2A2A;
+            }
         }
     </style>
 </head>
 <body>
-
-    <!-- Main Section with Background Gradient -->
-    <section class="relative text-center p-8 sm:p-16 bg-gradient-to-r from-black via-gray-900 to-black text-white overflow-hidden min-h-screen">
-        <div class="max-w-4xl mx-auto w-full">
-
-            <!-- Welcome Line -->
-            <div id="welcomeLine" class="welcome-line">
-                <h1 class="text-4xl font-bold tracking-wide">Welcome to A.I.N.O.R</h1>
-                <p class="text-lg mt-4">Your intelligent voice assistant designed to simplify your life. Type any command below, and let A.I.N.O.R assist you instantly.</p>
-            </div>
-
-            <!-- Command Buttons -->
-            <div id="commands" class="commands">
-                <button onclick="executeCommand('Hello')" class="py-4 px-8 bg-blue-600 rounded-lg shadow-lg hover:bg-blue-500 transition-all duration-300 text-white">Say Hello</button>
-                <button onclick="executeCommand('What is the weather today?')" class="py-4 px-8 bg-green-600 rounded-lg shadow-lg hover:bg-green-500 transition-all duration-300 text-white">Weather</button>
-                <button onclick="executeCommand('Tell me a joke')" class="py-4 px-8 bg-purple-600 rounded-lg shadow-lg hover:bg-purple-500 transition-all duration-300 text-white">Joke</button>
-            </div>
-
-            <!-- Input Box and Send Button -->
-            <div id="inputContainer" class="input-container">
-                <input type="text" id="command" placeholder="Enter your command..." class="w-full p-4 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400">
-                <button id="submit" class="py-4 px-8 bg-blue-600 rounded-lg hover:bg-blue-500 transition-all duration-300 text-white">Send</button>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Chat Container (Initially Hidden) -->
-    <div id="chatContainer" class="chat-container hidden">
-        <!-- Messages will be appended here dynamically -->
+    <div id="initialWindow">
+        <h1>Welcome to AINOR</h1>
+        <p>Enter a command to start the conversation:</p>
+        <input type="text" id="initialCommand" placeholder="Enter your command">
+        <button id="initialSubmit">Start</button>
     </div>
 
-    <!-- Fixed Input Box at Bottom -->
-    <div id="fixedInputContainer" class="input-container fixed-bottom hidden">
-        <input type="text" id="fixedCommand" placeholder="Type your command..." class="w-full p-4 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400">
-        <button id="submitFixed" class="py-4 px-8 bg-blue-600 rounded-lg hover:bg-blue-500 transition-all duration-300 text-white">Send</button>
+    <div id="appContainer" style="display: none;">
+        <div id="sidebar">
+            <h2>AINOR</h2>
+            <div class="quick-command" onclick="executeCommand('Hello, AINOR!')">
+                <i class="fas fa-comment-dots"></i> Say Hello
+            </div>
+            <div class="quick-command" onclick="executeCommand('Tell me a joke!')">
+                <i class="fas fa-laugh"></i> Tell a Joke
+            </div>
+            <div class="quick-command" onclick="executeCommand('What’s the weather?')">
+                <i class="fas fa-cloud-sun"></i> Weather Update
+            </div>
+        </div>
+
+        <div id="mainContent">
+            <div class="chat-container" id="chatContainer"></div>
+            <div class="input-container">
+                <input type="text" id="command" placeholder="Type a message...">
+                <button id="submit"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
     </div>
 
     <script>
-        let isInitialState = true;
-
-        // Function to show chat container and hide initial state elements
-        function startChat() {
-            document.getElementById('welcomeLine').classList.add('hidden');
-            document.getElementById('commands').classList.add('hidden');
-            document.getElementById('inputContainer').classList.add('hidden');
-            document.getElementById('fixedInputContainer').classList.remove('hidden');
-            document.getElementById('chatContainer').classList.remove('hidden');
+        function displayMessage(text, sender) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', sender === 'user' ? 'user' : 'ai');
+            messageElement.innerText = text;
+            document.getElementById('chatContainer').appendChild(messageElement);
+            document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
         }
 
-        // Handle the click event on the initial send button
-        document.getElementById('submit').onclick = function() {
-            const command = document.getElementById('command').value;
-            if (command.trim() !== '') {
-                addMessage(command, 'user');
-                processCommand(command);
-            }
-        };
+        function executeCommand(command) {
+            document.getElementById('command').value = command;
+            sendCommand();
+        }
 
-        // Handle the enter key on the initial input box
-        document.getElementById('command').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                document.getElementById('submit').click();
+        document.getElementById('initialSubmit').addEventListener('click', () => {
+            const initialCommand = document.getElementById('initialCommand').value;
+            if (initialCommand.trim() !== '') {
+                document.getElementById('initialWindow').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'flex';
+                displayMessage(initialCommand, 'user');
+                sendCommand(initialCommand);
             }
         });
 
-        // Add message to the chat container
-        function addMessage(text, sender) {
-            const chatContainer = document.getElementById('chatContainer');
-            const message = document.createElement('div');
-            message.className = `message ${sender} mb-4 flex justify-${sender === 'user' ? 'end' : 'start'}`;
-            message.innerHTML = text;
-            chatContainer.appendChild(message);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-
-            // Check if the message contains a <code> block and apply syntax highlighting
-            const codeMessage = message.querySelector('code');
-            if (codeMessage) {
-                Prism.highlightElement(codeMessage); // Highlight the code
-                const copyButton = document.createElement('button');
-                copyButton.className = 'copy-button';
-                copyButton.innerText = 'Copy';
-                copyButton.onclick = function() {
-                    navigator.clipboard.writeText(codeMessage.textContent).then(function() {
-                        alert('Code copied to clipboard!');
-                    }, function(err) {
-                        alert('Failed to copy code: ', err);
-                    });
-                };
-                message.appendChild(copyButton);
+        document.getElementById('submit').addEventListener('click', () => {
+            const command = document.getElementById('command').value;
+            if (command.trim() !== '') {
+                displayMessage(command, 'user');
+                sendCommand(command);
             }
-        }
+        });
 
-        // Process the command after the user inputs it
-        function processCommand(command) {
-            setTimeout(() => {
-                // Simulate AI response (This is where you would integrate actual API calls)
-                let aiResponse = '<pre><code>const express = require("express");\nconst app = express();\napp.listen(3000, () => console.log("Server is running"));</code></pre>';
+        async function sendCommand(command) {
+            try {
+                const response = await fetch('/process_command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command: command || document.getElementById('command').value })
+                });
 
-                addMessage(aiResponse, 'ai');
-                startChat(); // Hide initial elements and show chat interface
-            }, 1000);
-        }
-
-        // Execute predefined commands from the command buttons
-        function executeCommand(command) {
-            document.getElementById('command').value = command;
-            document.getElementById('submit').click();
+                const data = await response.json();
+                displayMessage(data.response, 'ai');
+                document.getElementById('command').value = '';
+            } catch (error) {
+                console.error('Error:', error);
+                displayMessage("I'm having trouble reaching the server.", 'ai');
+            }
         }
     </script>
 </body>
