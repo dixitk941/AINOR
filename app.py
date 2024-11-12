@@ -2,6 +2,7 @@ import os
 import requests
 from flask import Flask, render_template, request, jsonify
 import logging
+import pyjokes
 
 app = Flask(__name__)
 
@@ -84,7 +85,29 @@ def process_command():
         "who is your parent company",
         "who is your maker",
         "who is your architect",
-        "who is your originator"
+        "who is your originator",
+        "who is your creator?",
+        "who is your founder?",
+        "who is your developer?",
+        "tell me about your creator?",
+        "tell me about your founder?",
+        "who created you?",
+        "who developed you?",
+        "who made you?",
+        "who is responsible for your creation?",
+        "who is behind your development?",
+        "who designed you?",
+        "what team created you?",
+        "who built you?",
+        "who established you?",
+        "can you tell me your creator?",
+        "can you tell me about your developers?",
+        "who are your creators?",
+        "who is the team behind you?",
+        "who is your parent company?",
+        "who is your maker?",
+        "who is your architect?",
+        "who is your originator?"
     ]:
         response = "I was created by NeoCodeNex, Karan Dixit, and the talented Team Google."
     elif command in [
@@ -97,13 +120,62 @@ def process_command():
         "what should I call you",
         "who am i talking to",
         "are you ainor",
-        "your name"
+        "your name",
+        "what is your name?",
+        "tell me your name?",
+        "who are you?",
+        "what's your full name?",
+        "do you have a name?",
+        "can you tell me your name?",
+        "what should I call you?",
+        "who am i talking to?",
+        "are you ainor?",
+        "your name?"
     ]:
         response = "My name is AINOR, which stands for Artificial Intelligence Natural Optimization Resource."
+    elif command in [
+        "what is the full form of ainor",
+        "what's the full form of ainor",
+        "what is ainor",
+        "what does ainor stand for",
+        "what is the full form of ainor?",
+        "what's the full form of ainor?",
+        "what is ainor?",
+        "what does ainor stand for?"
+    ]:
+        response = "AINOR stands for Artificial Intelligence Natural Optimization Resource."
+    elif "tell me a joke" in command:
+        response = pyjokes.get_joke()
+    elif "weather" in command:
+        # Example: "weather in London"
+        if "in" in command:
+            location = command.split("in")[-1].strip()
+            weather_response = get_weather(location)
+            response = weather_response if weather_response else "I couldn't fetch the weather information right now."
+        else:
+            response = "Please provide a location for the weather information. For example, 'weather in London'."
     else:
         response = call_gemini_api(command)
     
     return jsonify({'response': response})
+
+def get_weather(location):
+    # Replace with your actual OpenWeather API key
+    OPENWEATHER_API_KEY = "23584c87cef13654b5adcbef4e529957"
+    OPENWEATHER_API_URL = f"http://api.openweathermap.org/data/2.5/weather?q={location}&appid={OPENWEATHER_API_KEY}&units=metric"
+    
+    try:
+        response = requests.get(OPENWEATHER_API_URL)
+        if response.ok:
+            weather_data = response.json()
+            weather_description = weather_data['weather'][0]['description']
+            temperature = weather_data['main']['temp']
+            return f"The current weather in {location} is {weather_description} with a temperature of {temperature}°C."
+        else:
+            return "I couldn't fetch the weather information right now."
+    except Exception as e:
+        logging.error(f"Weather API error: {e}")
+        return "I couldn't fetch the weather information right now."
 
 # Only needed for local development
 if __name__ == '__main__':
