@@ -22,3 +22,4 @@ Werkzeug==3.0.4             # WSGI utility library for Flask
 wheel==0.44.0               # For building Python packages
 wikipedia==1.4.0            # Wikipedia API for fetching summaries
 selenium==3.141.0           # For automating web browser interaction
+pyjokes==0.6.0              # For generating jokes
