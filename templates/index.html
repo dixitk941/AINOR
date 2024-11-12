@@ -321,115 +321,119 @@
 
 
     <script>
-        function displayMessage(text, sender) {
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message', sender === 'user' ? 'user' : 'ai');
-            messageElement.innerHTML = parseFormatting(text);
-            document.getElementById('chatContainer').appendChild(messageElement);
-            document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
-        }
+       function displayMessage(text, sender) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message', sender === 'user' ? 'user' : 'ai');
+    messageElement.innerHTML = parseFormatting(text);
+    document.getElementById('chatContainer').appendChild(messageElement);
+    document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
+}
 
-        function executeCommand(command) {
-            document.getElementById('command').value = command;
-            sendCommand();
-        }
+function executeCommand(command) {
+    document.getElementById('command').value = command;
+    sendCommand();
+}
 
-        document.getElementById('initialSubmit').addEventListener('click', () => {
-            const initialCommand = document.getElementById('initialCommand').value;
-            if (initialCommand.trim() !== '') {
-                document.getElementById('initialWindow').style.display = 'none';
-                document.getElementById('appContainer').style.display = 'flex';
-                displayMessage(initialCommand, 'user');
-                sendCommand(initialCommand);
-            }
+document.getElementById('initialSubmit').addEventListener('click', () => {
+    const initialCommand = document.getElementById('initialCommand').value;
+    if (initialCommand.trim() !== '') {
+        document.getElementById('initialWindow').style.display = 'none';
+        document.getElementById('appContainer').style.display = 'flex';
+        displayMessage(initialCommand, 'user');
+        sendCommand(initialCommand);
+    }
+});
+
+document.getElementById('submit').addEventListener('click', () => {
+    const command = document.getElementById('command').value;
+    if (command.trim() !== '') {
+        displayMessage(command, 'user');
+        sendCommand(command);
+    }
+});
+
+async function sendCommand(command) {
+    try {
+        const response = await fetch('/process_command', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command: command || document.getElementById('command').value })
         });
 
-        document.getElementById('submit').addEventListener('click', () => {
-            const command = document.getElementById('command').value;
-            if (command.trim() !== '') {
-                displayMessage(command, 'user');
-                sendCommand(command);
-            }
-        });
+        const data = await response.json();
+        displayMessage(data.response, 'ai');
+        document.getElementById('command').value = '';
+    } catch (error) {
+        console.error('Error:', error);
+        displayMessage("I'm having trouble reaching the server.", 'ai');
+    }
+}
 
-        async function sendCommand(command) {
-            try {
-                const response = await fetch('/process_command', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ command: command || document.getElementById('command').value })
-                });
+async function fetchData() {
+    try {
+        const response = await fetch('your-api-endpoint');
+        const data = await response.json();
+        const formattedResponse = parseFormatting(data.response);
+        displayMessage(formattedResponse, 'ai');
+        document.getElementById('command').value = '';
+    } catch (error) {
+        console.error('Error:', error);
+        displayMessage("I'm having trouble reaching the server.", 'ai');
+    }
+}
 
-                const data = await response.json();
-                displayMessage(data.response, 'ai');
-                document.getElementById('command').value = '';
-            } catch (error) {
-                console.error('Error:', error);
-                displayMessage("I'm having trouble reaching the server.", 'ai');
-            }
+function parseFormatting(text) {
+    // Escape HTML characters to prevent XSS
+    const escapeHtml = (unsafe) => {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    };
+
+    // Parse and apply markdown formatting (bold, italic, underline, bullet points, code blocks, etc.)
+    let formattedText = text
+        .replace(/```(.*?)```/gs, (match, p1) => {
+            return `<pre><code>${escapeHtml(p1)}</code><button onclick="copyToClipboard(this)">Copy</button></pre>`;
+        }) // Code blocks
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')                  // Bold
+        .replace(/\*(.*?)\*/g, '<i>$1</i>')                      // Italic
+        .replace(/__(.*?)__/g, '<u>$1</u>')                      // Underline
+        .replace(/## (.*?)\n/g, '<h2>$1</h2>')                    // Headings (e.g., ## Heading)
+        .replace(/`(.*?)`/g, '<kbd>$1</kbd>');                    // Keyboard input (backtick formatting)
+
+    // Handle bullet points
+    const bulletPoints = formattedText.split('\n').map(line => {
+        if (line.startsWith('* ')) {
+            return `<li>${line.substring(2)}</li>`;
         }
-        async function fetchData() {
-        try {
-            const response = await fetch('your-api-endpoint');
-            const data = await response.json();
-            const formattedResponse = parseFormatting(data.response);
-            displayMessage(formattedResponse, 'ai');
-            document.getElementById('command').value = '';
-        } catch (error) {
-            console.error('Error:', error);
-            displayMessage("I'm having trouble reaching the server.", 'ai');
-        }
+        return line;
+    }).join('\n');
+
+    // Wrap bullet points in <ul> tags
+    if (bulletPoints.includes('<li>')) {
+        formattedText = `<ul>${bulletPoints}</ul>`;
     }
 
-    function parseFormatting(text) {
-        // Escape HTML characters
-        const escapeHtml = (unsafe) => {
-            return unsafe
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        };
+    return formattedText;
+}
 
-        // Parse and apply markdown formatting (bold, italic, underline, bullet points, code blocks)
-        let formattedText = text
-            .replace(/```(.*?)```/gs, (match, p1) => {
-                return `<pre><code>${escapeHtml(p1)}</code><button onclick="copyToClipboard(this)">Copy</button></pre>`;
-            }) // Code blocks
-            .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')                 // Bold
-            .replace(/\*(.*?)\*/g, '<i>$1</i>')                     // Italic
-            .replace(/__(.*?)__/g, '<u>$1</u>');                    // Underline
+function copyToClipboard(button) {
+    const codeBlock = button.previousElementSibling;
+    const textArea = document.createElement('textarea');
+    textArea.value = codeBlock.textContent;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    button.textContent = 'Copied!';
+    setTimeout(() => {
+        button.textContent = 'Copy';
+    }, 2000);
+}
 
-        // Handle bullet points
-        const bulletPoints = formattedText.split('\n').map(line => {
-            if (line.startsWith('* ')) {
-                return `<li>${line.substring(2)}</li>`;
-            }
-            return line;
-        }).join('\n');
-
-        // Wrap bullet points in <ul> tags
-        if (bulletPoints.includes('<li>')) {
-            formattedText = `<ul>${bulletPoints}</ul>`;
-        }
-
-        return formattedText;
-    }
-
-    function copyToClipboard(button) {
-        const codeBlock = button.previousElementSibling;
-        const textArea = document.createElement('textarea');
-        textArea.value = codeBlock.textContent;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        button.textContent = 'Copied!';
-        setTimeout(() => {
-            button.textContent = 'Copy';
-        }, 2000);
-    }
     </script>
 </body>
 </html>
