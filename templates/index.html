@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A.I.N.O.R - Voice Assistant</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <title>AINOR</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" rel="stylesheet" />
    
    <style>
@@ -16,8 +16,8 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0D0D0D, #1A1A1A);
             color: #ECECEC;
             display: flex;
             justify-content: center;
@@ -27,50 +27,57 @@
         }
 
         #initialWindow {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            width: 100%;
-            max-width: 500px;
             text-align: center;
-            background-color: #1A1A1A;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.5s ease-out;
+            padding: 40px;
+            border-radius: 12px;
+            background: linear-gradient(145deg, #1F1F1F, #2A2A2A);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 1s ease-in-out;
         }
 
         #initialWindow h1 {
-            color: #ECECEC;
             margin-bottom: 10px;
+            font-size: 2em;
+            color: #FFD700;
         }
 
-        #initialWindow input, #initialSubmit {
+        #initialWindow h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+            color: #FFD700;
+        }
+
+        #initialWindow p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        #initialCommand {
+            width: calc(100% - 22px);
             padding: 12px;
-            border-radius: 5px;
             border: none;
-            outline: none;
-            margin-top: 10px;
-            font-size: 1rem;
-            width: 100%;
-            max-width: 350px;
-        }
-
-        #initialWindow input {
+            border-radius: 6px;
+            margin-bottom: 20px;
             background-color: #333;
             color: #ECECEC;
+            font-size: 1em;
         }
 
         #initialSubmit {
-            background-color: #3D8DFF;
-            color: #FFF;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            background: linear-gradient(145deg, #FFD700, #FFC107);
+            color: #1A1A1A;
             cursor: pointer;
-            transition: background 0.3s;
+            font-size: 1em;
+            transition: background 0.3s ease;
         }
 
         #initialSubmit:hover {
-            background-color: #1D6FE5;
+            background: linear-gradient(145deg, #FFC107, #FFD700);
         }
 
         #appContainer {
@@ -284,10 +291,16 @@
             background-color: #1A1A1A;
             color: #ECECEC;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
     <div id="initialWindow">
+        <h2>AINOR</h2>
         <h1>Welcome to AINOR</h1>
         <p>Enter a command to start the conversation:</p>
         <input type="text" id="initialCommand" placeholder="Enter your command">
