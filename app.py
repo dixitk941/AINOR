@@ -10,8 +10,8 @@ app = Flask(__name__)
 all_responses = []
 
 # Gemini API setup with environment variable
-# GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_API_KEY = "AIzaSyCh87P6IHCR2TVINidnDifeybL3CqC_flQ"
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+# GEMINI_API_KEY = "AIzaSyCh876IHCR2TVINidnDifeybL3CqC_flQ"
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
 def call_gemini_api(prompt):
@@ -146,36 +146,11 @@ def process_command():
         response = "AINOR stands for Artificial Intelligence Natural Optimization Resource."
     elif "tell me a joke" in command:
         response = pyjokes.get_joke()
-    elif "weather" in command:
-        # Example: "weather in London"
-        if "in" in command:
-            location = command.split("in")[-1].strip()
-            weather_response = get_weather(location)
-            response = weather_response if weather_response else "I couldn't fetch the weather information right now."
-        else:
-            response = "Please provide a location for the weather information. For example, 'weather in London'."
     else:
         response = call_gemini_api(command)
     
     return jsonify({'response': response})
 
-def get_weather(location):
-    # Replace with your actual OpenWeather API key
-    OPENWEATHER_API_KEY = "23584c87cef13654b5adcbef4e529957"
-    OPENWEATHER_API_URL = f"http://api.openweathermap.org/data/2.5/weather?q={location}&appid={OPENWEATHER_API_KEY}&units=metric"
-    
-    try:
-        response = requests.get(OPENWEATHER_API_URL)
-        if response.ok:
-            weather_data = response.json()
-            weather_description = weather_data['weather'][0]['description']
-            temperature = weather_data['main']['temp']
-            return f"The current weather in {location} is {weather_description} with a temperature of {temperature}°C."
-        else:
-            return "I couldn't fetch the weather information right now."
-    except Exception as e:
-        logging.error(f"Weather API error: {e}")
-        return "I couldn't fetch the weather information right now."
 
 # Only needed for local development
 if __name__ == '__main__':
