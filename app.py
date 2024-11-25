@@ -2,7 +2,6 @@ import os
 import requests
 from flask import Flask, render_template, request, jsonify
 import logging
-import pyjokes
 
 app = Flask(__name__)
 
@@ -11,7 +10,7 @@ all_responses = []
 
 # Gemini API setup with environment variable
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_API_KEY = "AIzaSyCh876IHCR2TVINidnDifeybL3CqC_flQ"
+# GEMINI_API_KEY = "XXXXXXXXXXXXXXXX-ORO8hm5PW4-0lU"
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
 def call_gemini_api(prompt):
@@ -85,29 +84,7 @@ def process_command():
         "who is your parent company",
         "who is your maker",
         "who is your architect",
-        "who is your originator",
-        "who is your creator?",
-        "who is your founder?",
-        "who is your developer?",
-        "tell me about your creator?",
-        "tell me about your founder?",
-        "who created you?",
-        "who developed you?",
-        "who made you?",
-        "who is responsible for your creation?",
-        "who is behind your development?",
-        "who designed you?",
-        "what team created you?",
-        "who built you?",
-        "who established you?",
-        "can you tell me your creator?",
-        "can you tell me about your developers?",
-        "who are your creators?",
-        "who is the team behind you?",
-        "who is your parent company?",
-        "who is your maker?",
-        "who is your architect?",
-        "who is your originator?"
+        "who is your originator"
     ]:
         response = "I was created by NeoCodeNex, Karan Dixit, and the talented Team Google."
     elif command in [
@@ -120,37 +97,13 @@ def process_command():
         "what should I call you",
         "who am i talking to",
         "are you ainor",
-        "your name",
-        "what is your name?",
-        "tell me your name?",
-        "who are you?",
-        "what's your full name?",
-        "do you have a name?",
-        "can you tell me your name?",
-        "what should I call you?",
-        "who am i talking to?",
-        "are you ainor?",
-        "your name?"
+        "your name"
     ]:
         response = "My name is AINOR, which stands for Artificial Intelligence Natural Optimization Resource."
-    elif command in [
-        "what is the full form of ainor",
-        "what's the full form of ainor",
-        "what is ainor",
-        "what does ainor stand for",
-        "what is the full form of ainor?",
-        "what's the full form of ainor?",
-        "what is ainor?",
-        "what does ainor stand for?"
-    ]:
-        response = "AINOR stands for Artificial Intelligence Natural Optimization Resource."
-    elif "tell me a joke" in command:
-        response = pyjokes.get_joke()
     else:
         response = call_gemini_api(command)
     
     return jsonify({'response': response})
-
 
 # Only needed for local development
 if __name__ == '__main__':
