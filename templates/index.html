@@ -141,6 +141,7 @@
             border-right: 1px solid var(--border-color);
             padding: 1rem;
             transition: all 0.3s;
+            height: 100vh;
         }
 
         #sidebar-header {
@@ -189,7 +190,310 @@
             transition: background-color 0.2s;
             margin-bottom: 0.5rem;
         }
+/* Add these styles to your existing CSS */
+.chat-history-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-radius: var (--radius-md);
+    cursor: pointer;
+    transition: background-color 0.2s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: relative;
+}
 
+/* Chat actions button */
+.chat-actions {
+    position: absolute;
+    right: 0.5rem;
+    display: none; /* Hidden by default, shown on hover */
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+.chat-history-item:hover .chat-actions {
+    display: block;
+    background-color: var(--hover-color);
+}
+
+.chat-history-item.active .chat-actions {
+    display: block;
+}
+
+.chat-actions:hover {
+    background-color: var(--border-color);
+}
+
+/* Chat actions dropdown */
+.chat-actions-dropdown {
+    position: fixed;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: 0 2px 8px var(--shadow-color);
+    z-index: 1000;
+    min-width: 160px;
+    display: none;
+}
+
+.chat-actions-dropdown.active {
+    display: block;
+}
+/* Add to your CSS styles section */
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+    max-width: 700px;
+    margin: 2rem auto;
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+    background-color: var(--bg-color);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.welcome-header {
+    margin-bottom: 1.5rem;
+}
+
+.welcome-header h2 {
+    font-size: 1.75rem;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+}
+
+.welcome-header p {
+    color: var(--secondary-text);
+    font-size: 1rem;
+}
+
+.welcome-content {
+    width: 100%;
+    text-align: left;
+}
+
+.welcome-content > p {
+    margin-bottom: 1rem;
+    color: var(--primary-text);
+}
+
+.welcome-suggestions {
+    list-style: none;
+    margin: 1.5rem 0;
+}
+
+.welcome-suggestions li {
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--radius-md);
+    background-color: var(--hover-color);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: transform 0.2s;
+}
+
+.welcome-suggestions li:hover {
+    transform: translateX(5px);
+}
+
+.welcome-suggestions i {
+    color: var(--accent-color);
+    font-size: 1rem;
+    width: 1.25rem;
+    text-align: center;
+}
+
+.welcome-prompt {
+    text-align: center;
+    margin-top: 2rem;
+    font-weight: 500;
+    color: var(--accent-color);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .welcome-container {
+        padding: 1.5rem 1rem;
+        margin: 1rem auto;
+    }
+    
+    .welcome-header h2 {
+        font-size: 1.5rem;
+    }
+}
+.chat-action-item {
+    padding: 0.65rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--primary-text);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.chat-action-item:hover {
+    background-color: var(--hover-color);
+}
+
+.chat-action-item:first-child {
+    border-top-left-radius: var(--radius-md);
+    border-top-right-radius: var(--radius-md);
+}
+
+.chat-action-item:last-child {
+    border-bottom-left-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+}
+
+.chat-action-item.danger {
+    color: #e53935;
+}
+
+.chat-action-item.danger:hover {
+    background-color: rgba(229, 57, 53, 0.1);
+}
+
+/* Sidebar actions */
+.sidebar-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.sidebar-actions h3 {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--secondary-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    margin: 0;
+}
+
+.sidebar-actions-btn {
+    background: none;
+    border: none;
+    color: var(--secondary-text);
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    transition: background-color 0.2s;
+}
+
+.sidebar-actions-btn:hover {
+    background-color: var(--hover-color);
+    color: #e53935;
+}
+
+/* Modal styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--bg-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 24px var(--shadow-color);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary-text);
+}
+
+.modal-content p {
+    margin-bottom: 1.5rem;
+    color: var(--secondary-text);
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--input-bg);
+    color: var(--primary-text);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.2s;
+}
+
+.modal-content input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.btn-primary, .btn-secondary, .btn-danger {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0d8c6a;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--primary-text);
+}
+
+.btn-secondary:hover {
+    background-color: var(--hover-color);
+}
+
+.btn-danger {
+    background-color: #e53935;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c62828;
+}
         .quick-command:hover {
             background-color: var(--hover-color);
         }
@@ -199,7 +503,29 @@
             font-size: 1rem;
             width: 1.25rem;
         }
+/* Add these styles for new elements */
+.loading-history, 
+.no-history, 
+.error-history,
+.loading-messages,
+.no-messages,
+.error-messages {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--secondary-text);
+    text-align: center;
+}
 
+.error-history,
+.error-messages {
+    color: #e53935;
+}
+
+.loading-history,
+.loading-messages {
+    opacity: 0.7;
+    font-style: italic;
+}
         #theme-toggle {
             margin-top: auto;
             padding: 0.75rem 1rem;
@@ -449,7 +775,11 @@
 
 /* Chat history section */
 .chat-history-section {
-    margin-bottom: 1rem;
+    margin: 0.5rem 0 1rem 0;
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .chat-history-section h3 {
@@ -463,19 +793,30 @@
 }
 
 .chat-history-list {
-    max-height: 40vh;
     overflow-y: auto;
+    max-height: none;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    position: relative; /* Add this */
+    padding-bottom: 10px; /* Add space for dropdowns */
 }
 
 .chat-history-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.6rem 0.75rem;
+    padding: 0.75rem;
     border-radius: var(--radius-md);
     cursor: pointer;
+    position: relative;
+
     transition: background-color 0.2s;
-    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    white-space: nowrap;
 }
 
 .chat-history-item:hover {
@@ -484,6 +825,7 @@
 
 .chat-history-item.active {
     background-color: rgba(16, 163, 127, 0.1);
+    font-weight: 500;
 }
 
 .chat-history-item i {
@@ -493,7 +835,7 @@
 
 .chat-title {
     flex-grow: 1;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -502,7 +844,7 @@
 
 .chat-date {
     font-size: 0.7rem;
-    color: var(--secondary-text);
+    color: var (--secondary-text);
 }
 
 /* Scrollbar styling for chat history */
@@ -532,7 +874,7 @@
             position: relative;
             display: flex;
             align-items: center;
-            border: 1px solid var(--border-color);
+            border: 1px solid var (--border-color);
             border-radius: var(--radius-lg);
             background-color: var(--input-bg);
             padding: 0.75rem 1rem;
@@ -587,7 +929,7 @@
         .input-info {
             text-align: center;
             font-size: 0.75rem;
-            color: var(--secondary-text);
+            color: var (--secondary-text);
             margin-top: 0.5rem;
         }
 
@@ -947,20 +1289,13 @@
             <button class="new-chat-btn">
                 <i class="fa-regular fa-plus"></i> New chat
             </button>
-
-            <div class="quick-command" onclick="executeCommand('Hello, AINOR!')">
-                <i class="fa-regular fa-message"></i>
-                <span>Say Hello</span>
-            </div>
             
-            <div class="quick-command" onclick="executeCommand('Tell me a joke!')">
-                <i class="fa-regular fa-face-laugh"></i>
-                <span>Tell a Joke</span>
-            </div>
-            
-            <div class="quick-command" onclick="executeCommand('What\'s the weather?')">
-                <i class="fa-regular fa-cloud-sun"></i>
-                <span>Weather Update</span>
+            <!-- Chat history will be loaded here dynamically -->
+            <div class="chat-history-section">
+                <h3>Chat History</h3>
+                <div id="chat-history-list" class="chat-history-list">
+                    <!-- History items will be added here by JavaScript -->
+                </div>
             </div>
             
             <div id="theme-toggle">
@@ -1024,37 +1359,52 @@ measurementId: "G-ZFNR03PDPM"
         let currentChatId = null;
         let userChats = [];
 
-        // Check authentication state
+        // Modify the authentication state check to handle app state restoration
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
+                console.log("User authenticated:", user.displayName, user.email);
                 // User is signed in
                 currentUser = user;
                 document.querySelector('#sidebar-header h2').innerHTML = `Hello, ${user.displayName || 'User'}`;
                 
-                // Load user's chat history
+                // Check if there's a saved state to restore
+                const savedChatId = localStorage.getItem('currentChatId');
+                if (savedChatId) {
+                    console.log("Found saved chat ID:", savedChatId);
+                    document.getElementById('initialWindow').style.display = 'none';
+                    document.getElementById('appContainer').style.display = 'flex';
+                }
+                
+                // Load user's chat history (which will also load the correct chat)
                 loadChatHistory();
                 
-                // Show user profile in sidebar
-                const userProfile = document.createElement('div');
-                userProfile.className = 'user-profile';
-                userProfile.innerHTML = `
-                    <div class="user-avatar">${getUserInitials(user)}</div>
-                    <div class="user-info">
-                        <div class="user-name">${user.displayName || 'User'}</div>
-                        <div class="user-email">${user.email}</div>
-                    </div>
-                    <button id="logout-btn"><i class="fa-solid fa-sign-out-alt"></i></button>
-                `;
-                
-                // Add logout functionality
-                document.getElementById('sidebar').appendChild(userProfile);
-                document.getElementById('logout-btn').addEventListener('click', () => {
-                    firebase.auth().signOut().then(() => {
-                        window.location.href = '/login';                    });
-                });
+                // Show user profile in sidebar if it doesn't exist yet
+                if (!document.querySelector('.user-profile')) {
+                    const userProfile = document.createElement('div');
+                    userProfile.className = 'user-profile';
+                    userProfile.innerHTML = `
+                        <div class="user-avatar">${getUserInitials(user)}</div>
+                        <div class="user-info">
+                            <div class="user-name">${user.displayName || 'User'}</div>
+                            <div class="user-email">${user.email}</div>
+                        </div>
+                        <button id="logout-btn"><i class="fa-solid fa-sign-out-alt"></i></button>
+                    `;
+                    
+                    // Add logout functionality
+                    document.getElementById('sidebar').appendChild(userProfile);
+                    document.getElementById('logout-btn').addEventListener('click', () => {
+                        localStorage.removeItem('currentChatId'); // Clear saved state
+                        firebase.auth().signOut().then(() => {
+                            window.location.href = '/login';
+                        });
+                    });
+                }
             } else {
+                console.log("No user authenticated, redirecting to login");
                 // User is not signed in, redirect to login
-                window.location.href = '/login';            }
+                window.location.href = '/login';
+            }
         });
 
         // Get user initials for avatar
@@ -1066,73 +1416,104 @@ measurementId: "G-ZFNR03PDPM"
             return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
         }
 
-        // Load user's chat history from Firestore
+        // Improve the loadChatHistory function with better logging and error handling
         async function loadChatHistory() {
-            if (!currentUser) return;
+            console.log("Loading chat history for user:", currentUser?.uid);
+            if (!currentUser) {
+                console.log("No user logged in");
+                return;
+            }
 
             try {
+                // Add loading indicator to chat history list
+                const chatHistoryList = document.getElementById('chat-history-list');
+                if (chatHistoryList) {
+                    chatHistoryList.innerHTML = '<div class="loading-history">Loading chats...</div>';
+                }
+                
                 const chatsSnapshot = await db.collection('chats')
                     .where('userId', '==', currentUser.uid)
                     .orderBy('updatedAt', 'desc')
                     .get();
                 
+                console.log(`Found ${chatsSnapshot.size} chats for user`);
+                
                 // Clear chat history list
-                const chatHistoryList = document.getElementById('chat-history-list') || createChatHistoryList();
                 chatHistoryList.innerHTML = '';
                 userChats = [];
                 
                 if (chatsSnapshot.empty) {
-                    // Create a new chat if no chats exist
-                    createNewChat();
+                    console.log("No existing chats found, creating new chat");
+                    chatHistoryList.innerHTML = '<div class="no-history">No chat history yet</div>';
+                    await createNewChat();
                     return;
                 }
                 
                 // Add each chat to the list
                 chatsSnapshot.forEach(doc => {
                     const chatData = doc.data();
+                    console.log("Chat found:", doc.id, chatData.title);
+                    
                     userChats.push({
                         id: doc.id,
-                        title: chatData.title,
+                        title: chatData.title || 'New Conversation',
                         updatedAt: chatData.updatedAt
                     });
                     
                     const chatItem = document.createElement('div');
                     chatItem.className = 'chat-history-item';
+                    chatItem.dataset.chatId = doc.id;
                     chatItem.innerHTML = `
                         <i class="fa-regular fa-comments"></i>
-                        <span class="chat-title">${chatData.title}</span>
-                        <span class="chat-date">${formatDate(chatData.updatedAt.toDate())}</span>
+                        <span class="chat-title">${chatData.title || 'New Conversation'}</span>
                     `;
                     
                     chatItem.addEventListener('click', () => loadChat(doc.id));
                     chatHistoryList.appendChild(chatItem);
                 });
                 
-                // Load the most recent chat
-                loadChat(userChats[0].id);
+                // Load the most recent chat or the saved one
+                const savedChatId = localStorage.getItem('currentChatId');
+                if (savedChatId && userChats.some(chat => chat.id === savedChatId)) {
+                    console.log("Loading saved chat:", savedChatId);
+                    loadChat(savedChatId);
+                } else if (userChats.length > 0) {
+                    console.log("Loading most recent chat:", userChats[0].id);
+                    loadChat(userChats[0].id);
+                }
                 
             } catch (error) {
                 console.error('Error loading chat history:', error);
+                const chatHistoryList = document.getElementById('chat-history-list');
+                if (chatHistoryList) {
+                    chatHistoryList.innerHTML = '<div class="error-history">Error loading chat history</div>';
+                }
             }
         }
 
         // Create chat history section in sidebar
         function createChatHistoryList() {
-            const chatHistorySection = document.createElement('div');
-            chatHistorySection.className = 'chat-history-section';
-            chatHistorySection.innerHTML = `
-                <h3>Chat History</h3>
-            `;
+            // Check if the section already exists
+            let chatHistoryList = document.getElementById('chat-history-list');
             
-            const chatHistoryList = document.createElement('div');
-            chatHistoryList.id = 'chat-history-list';
-            chatHistoryList.className = 'chat-history-list';
-            
-            chatHistorySection.appendChild(chatHistoryList);
-            
-            // Insert after new chat button
-            const newChatBtn = document.querySelector('.new-chat-btn');
-            newChatBtn.parentNode.insertBefore(chatHistorySection, newChatBtn.nextSibling);
+            if (!chatHistoryList) {
+                // If for some reason it doesn't exist, create it
+                const chatHistorySection = document.createElement('div');
+                chatHistorySection.className = 'chat-history-section';
+                chatHistorySection.innerHTML = `
+                    <h3>Chat History</h3>
+                `;
+                
+                chatHistoryList = document.createElement('div');
+                chatHistoryList.id = 'chat-history-list';
+                chatHistoryList.className = 'chat-history-list';
+                
+                chatHistorySection.appendChild(chatHistoryList);
+                
+                // Insert after new chat button
+                const newChatBtn = document.querySelector('.new-chat-btn');
+                newChatBtn.parentNode.insertBefore(chatHistorySection, newChatBtn.nextSibling);
+            }
             
             return chatHistoryList;
         }
@@ -1152,31 +1533,51 @@ measurementId: "G-ZFNR03PDPM"
             }
         }
 
-        // Load chat messages
+        // Update the loadChat function to save current chat ID to localStorage
         async function loadChat(chatId) {
             if (!currentUser) return;
             
             try {
                 currentChatId = chatId;
+                // Save current chat ID to localStorage
+                localStorage.setItem('currentChatId', chatId);
                 
                 // Highlight the selected chat
                 document.querySelectorAll('.chat-history-item').forEach(item => {
                     item.classList.remove('active');
-                    if (item.querySelector('.chat-title').textContent === userChats.find(chat => chat.id === chatId).title) {
+                    if (item.dataset.chatId === chatId) {
                         item.classList.add('active');
                     }
                 });
                 
+                // Show loading indicator in chat container
+                const chatContainer = document.getElementById('chatContainer');
+                chatContainer.innerHTML = '<div class="loading-messages">Loading messages...</div>';
+                
                 // Get chat messages
                 const chatDoc = await db.collection('chats').doc(chatId).get();
+                if (!chatDoc.exists) {
+                    console.error("Chat document doesn't exist:", chatId);
+                    chatContainer.innerHTML = '<div class="error-messages">Chat not found</div>';
+                    return;
+                }
+                
                 const chatData = chatDoc.data();
                 
                 // Update title of current chat session
-                document.querySelector('.mobile-header h2').textContent = chatData.title;
+                document.querySelector('.mobile-header h2').textContent = chatData.title || 'New Conversation';
                 
                 // Clear chat container
-                const chatContainer = document.getElementById('chatContainer');
                 chatContainer.innerHTML = '';
+                
+                // Check for initial screen and hide it if needed
+                const initialWindow = document.getElementById('initialWindow');
+                const appContainer = document.getElementById('appContainer');
+                
+                if (initialWindow.style.display !== 'none') {
+                    initialWindow.style.display = 'none';
+                    appContainer.style.display = 'flex';
+                }
                 
                 // Load messages
                 const messagesSnapshot = await db.collection('chats').doc(chatId)
@@ -1184,9 +1585,37 @@ measurementId: "G-ZFNR03PDPM"
                     .orderBy('timestamp', 'asc')
                     .get();
                 
+                if (messagesSnapshot.empty) {
+                    // Create a nice welcome message
+                    chatContainer.innerHTML = `
+                        <div class="welcome-container">
+                            <div class="welcome-header">
+                                <h2>Welcome to AINOR</h2>
+                                <p>Your AI-powered assistant for natural language communication</p>
+                            </div>
+                            <div class="welcome-content">
+                                <p>I can help you with a wide range of tasks:</p>
+                                <ul class="welcome-suggestions">
+                                    <li><i class="fa-solid fa-lightbulb"></i> Answer questions and provide information</li>
+                                    <li><i class="fa-solid fa-code"></i> Help with programming and technical challenges</li>
+                                    <li><i class="fa-solid fa-pen-fancy"></i> Assist with writing and content creation</li>
+                                    <li><i class="fa-solid fa-calculator"></i> Solve mathematical problems</li>
+                                    <li><i class="fa-solid fa-brain"></i> Provide creative ideas and inspiration</li>
+                                </ul>
+                                <p class="welcome-prompt">Type your message below to get started!</p>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
                 messagesSnapshot.forEach(doc => {
                     const messageData = doc.data();
-                    displayMessage(messageData.content, messageData.sender, messageData.timestamp.toDate());
+                    displayMessage(
+                        messageData.content, 
+                        messageData.sender, 
+                        messageData.timestamp?.toDate() || new Date()
+                    );
                 });
                 
                 // Scroll to bottom
@@ -1194,6 +1623,8 @@ measurementId: "G-ZFNR03PDPM"
                 
             } catch (error) {
                 console.error('Error loading chat:', error);
+                const chatContainer = document.getElementById('chatContainer');
+                chatContainer.innerHTML = '<div class="error-messages">Error loading messages</div>';
             }
         }
 
@@ -1335,9 +1766,10 @@ measurementId: "G-ZFNR03PDPM"
         }
 
         // Update new chat button handler
-        document.querySelector('.new-chat-btn').addEventListener('click', () => {
-            document.getElementById('chatContainer').innerHTML = '';
-            createNewChat();
+        document.querySelector('.new-chat-btn').addEventListener('click', async () => {
+            console.log("Creating new chat");
+            document.getElementById('chatContainer').innerHTML = '<div class="loading-messages">Creating new chat...</div>';
+            await createNewChat();
         });
 
         // Auto-resize textarea
@@ -1358,7 +1790,359 @@ measurementId: "G-ZFNR03PDPM"
                 icon.className = 'fa-regular fa-moon';
             }
         });
+// Add these functions to your existing script
 
+// Modify your loadChatHistory function to include action buttons
+async function loadChatHistory() {
+    console.log("Loading chat history for user:", currentUser?.uid);
+    if (!currentUser) {
+        console.log("No user logged in");
+        return;
+    }
+
+    try {
+        // Add loading indicator to chat history list
+        const chatHistoryList = document.getElementById('chat-history-list');
+        if (chatHistoryList) {
+            chatHistoryList.innerHTML = '<div class="loading-history">Loading chats...</div>';
+        }
+        
+        // Update chat history header to include clear all button
+        const chatHistorySection = document.querySelector('.chat-history-section h3').parentElement;
+        if (!document.querySelector('.sidebar-actions')) {
+            const existingHeading = document.querySelector('.chat-history-section h3');
+            const sidebarActions = document.createElement('div');
+            sidebarActions.className = 'sidebar-actions';
+            sidebarActions.innerHTML = `
+                <h3>Chat History</h3>
+                <button class="sidebar-actions-btn" id="clearAllHistory">
+                    <i class="fa-regular fa-trash-can"></i> Clear all
+                </button>
+            `;
+            existingHeading.parentElement.replaceChild(sidebarActions, existingHeading);
+            
+            document.getElementById('clearAllHistory').addEventListener('click', showClearHistoryModal);
+        }
+        
+        const chatsSnapshot = await db.collection('chats')
+            .where('userId', '==', currentUser.uid)
+            .orderBy('updatedAt', 'desc')
+            .get();
+        
+        console.log(`Found ${chatsSnapshot.size} chats for user`);
+        
+        // Clear chat history list
+        chatHistoryList.innerHTML = '';
+        userChats = [];
+        
+        if (chatsSnapshot.empty) {
+            console.log("No existing chats found, creating new chat");
+            chatHistoryList.innerHTML = '<div class="no-history">No chat history yet</div>';
+            await createNewChat();
+            return;
+        }
+        
+        // Add each chat to the list
+        chatsSnapshot.forEach(doc => {
+            const chatData = doc.data();
+            console.log("Chat found:", doc.id, chatData.title);
+            
+            userChats.push({
+                id: doc.id,
+                title: chatData.title || 'New Conversation',
+                updatedAt: chatData.updatedAt
+            });
+            
+            const chatItem = document.createElement('div');
+            chatItem.className = 'chat-history-item';
+            chatItem.dataset.chatId = doc.id;
+            chatItem.innerHTML = `
+                <i class="fa-regular fa-comments"></i>
+                <span class="chat-title">${chatData.title || 'New Conversation'}</span>
+                <div class="chat-actions">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                    <div class="chat-actions-dropdown">
+                        <div class="chat-action-item rename-chat" data-chat-id="${doc.id}">
+                            <i class="fa-regular fa-pen-to-square"></i> Rename
+                        </div>
+                        <div class="chat-action-item danger delete-chat" data-chat-id="${doc.id}">
+                            <i class="fa-regular fa-trash-can"></i> Delete
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            chatItem.addEventListener('click', (e) => {
+                // Don't trigger chat load if clicking on the actions button or dropdown
+                if (!e.target.closest('.chat-actions')) {
+                    loadChat(doc.id);
+                }
+            });
+            
+            chatHistoryList.appendChild(chatItem);
+        });
+        
+        // Setup chat action buttons
+        setupChatActions();
+        
+        // Load the most recent chat or the saved one
+        const savedChatId = localStorage.getItem('currentChatId');
+        if (savedChatId && userChats.some(chat => chat.id === savedChatId)) {
+            console.log("Loading saved chat:", savedChatId);
+            loadChat(savedChatId);
+        } else if (userChats.length > 0) {
+            console.log("Loading most recent chat:", userChats[0].id);
+            loadChat(userChats[0].id);
+        }
+        
+    } catch (error) {
+        console.error('Error loading chat history:', error);
+        const chatHistoryList = document.getElementById('chat-history-list');
+        if (chatHistoryList) {
+            chatHistoryList.innerHTML = '<div class="error-history">Error loading chat history</div>';
+        }
+    }
+}
+
+// Set up chat action dropdown toggles
+function setupChatActions() {
+    document.querySelectorAll('.chat-actions').forEach(actionBtn => {
+        actionBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            // Close all other dropdowns first
+            document.querySelectorAll('.chat-actions-dropdown').forEach(dropdown => {
+                dropdown.classList.remove('active');
+            });
+            
+            // Position this dropdown at the button's location
+            const dropdown = actionBtn.querySelector('.chat-actions-dropdown');
+            const rect = actionBtn.getBoundingClientRect();
+            
+            dropdown.style.top = (rect.bottom + 5) + 'px';
+            dropdown.style.right = (window.innerWidth - rect.right + 5) + 'px';
+            
+            // Show dropdown
+            dropdown.classList.toggle('active');
+        });
+    });
+    
+    // Handle rename action
+    document.querySelectorAll('.rename-chat').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const chatId = btn.getAttribute('data-chat-id');
+            showRenameModal(chatId);
+        });
+    });
+    
+    // Handle delete action
+    document.querySelectorAll('.delete-chat').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const chatId = btn.getAttribute('data-chat-id');
+            deleteChat(chatId);
+        });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.chat-actions-dropdown').forEach(dropdown => {
+            dropdown.classList.remove('active');
+        });
+    });
+}
+
+// Rename chat functionality
+function showRenameModal(chatId) {
+    const chatData = userChats.find(chat => chat.id === chatId);
+    if (!chatData) return;
+    
+    // Get the modal
+    const modal = document.getElementById('renameModal');
+    const input = document.getElementById('newTitleInput');
+    
+    // Set current title in input
+    input.value = chatData.title;
+    
+    // Show modal
+    modal.style.display = 'flex';
+    input.focus();
+    input.select();
+    
+    // Handle save button
+    document.getElementById('confirmRename').onclick = async () => {
+        const newTitle = input.value.trim();
+        if (newTitle) {
+            await renameChat(chatId, newTitle);
+        }
+        modal.style.display = 'none';
+    };
+    
+    // Handle cancel button
+    document.getElementById('cancelRename').onclick = () => {
+        modal.style.display = 'none';
+    };
+    
+    // Close when clicking outside
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
+    
+    // Handle Enter key
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            document.getElementById('confirmRename').click();
+        }
+    });
+}
+
+async function renameChat(chatId, newTitle) {
+    try {
+        // Update in Firestore
+        await db.collection('chats').doc(chatId).update({
+            title: newTitle,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        console.log(`Chat ${chatId} renamed to "${newTitle}"`);
+        
+        // Update in local array
+        const chatIndex = userChats.findIndex(chat => chat.id === chatId);
+        if (chatIndex !== -1) {
+            userChats[chatIndex].title = newTitle;
+        }
+        
+        // Update in UI
+        const chatItem = document.querySelector(`.chat-history-item[data-chat-id="${chatId}"] .chat-title`);
+        if (chatItem) {
+            chatItem.textContent = newTitle;
+        }
+        
+        // Update mobile header title if this is the active chat
+        if (currentChatId === chatId) {
+            document.querySelector('.mobile-header h2').textContent = newTitle;
+        }
+        
+    } catch (error) {
+        console.error('Error renaming chat:', error);
+        alert('Failed to rename chat. Please try again.');
+    }
+}
+
+// Delete chat functionality 
+async function deleteChat(chatId) {
+    if (!confirm('Are you sure you want to delete this conversation?')) return;
+    
+    try {
+        // Delete all messages in the chat
+        const messagesSnapshot = await db.collection('chats').doc(chatId)
+            .collection('messages').get();
+            
+        const batch = db.batch();
+        
+        messagesSnapshot.forEach(doc => {
+            batch.delete(doc.ref);
+        });
+        
+        // Delete the chat document
+        batch.delete(db.collection('chats').doc(chatId));
+        
+        // Commit the batch
+        await batch.commit();
+        
+        console.log(`Chat ${chatId} deleted`);
+        
+        // If we deleted the current chat, create a new one
+        if (currentChatId === chatId) {
+            currentChatId = null;
+            localStorage.removeItem('currentChatId');
+            document.getElementById('chatContainer').innerHTML = '';
+            await createNewChat();
+        } else {
+            // Just reload the history
+            loadChatHistory();
+        }
+        
+    } catch (error) {
+        console.error('Error deleting chat:', error);
+        alert('Failed to delete chat. Please try again.');
+    }
+}
+
+// Clear all chat history
+function showClearHistoryModal() {
+    // Get the modal
+    const modal = document.getElementById('clearHistoryModal');
+    
+    // Show modal
+    modal.style.display = 'flex';
+    
+    // Handle confirm button
+    document.getElementById('confirmClear').onclick = async () => {
+        await clearAllChatHistory();
+        modal.style.display = 'none';
+    };
+    
+    // Handle cancel button
+    document.getElementById('cancelClear').onclick = () => {
+        modal.style.display = 'none';
+    };
+    
+    // Close when clicking outside
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
+}
+
+async function clearAllChatHistory() {
+    try {
+        // Get all chats
+        const chatsSnapshot = await db.collection('chats')
+            .where('userId', '==', currentUser.uid)
+            .get();
+            
+        if (chatsSnapshot.empty) {
+            return;
+        }
+        
+        // Create batch (for efficiency)
+        const batch = db.batch();
+        
+        // Delete all messages and chats
+        for (const chatDoc of chatsSnapshot.docs) {
+            // Get all messages for this chat
+            const messagesSnapshot = await chatDoc.ref.collection('messages').get();
+            
+            // Delete all messages
+            messagesSnapshot.forEach(messageDoc => {
+                batch.delete(messageDoc.ref);
+            });
+            
+            // Delete the chat document
+            batch.delete(chatDoc.ref);
+        }
+        
+        // Commit the batch
+        await batch.commit();
+        
+        console.log('All chat history cleared');
+        
+        // Reset current chat and create a new one
+        currentChatId = null;
+        localStorage.removeItem('currentChatId');
+        document.getElementById('chatContainer').innerHTML = '';
+        await createNewChat();
+        
+    } catch (error) {
+        console.error('Error clearing chat history:', error);
+        alert('Failed to clear chat history. Please try again.');
+    }
+}
         // Mobile sidebar toggle
         const mobileToggle = document.getElementById('mobileToggle');
         const sidebar = document.getElementById('sidebar');
@@ -1373,43 +2157,6 @@ measurementId: "G-ZFNR03PDPM"
             sidebar.classList.remove('active');
             overlay.style.display = 'none';
         });
-
-        // Display messages
-        function displayMessage(text, sender) {
-            const messageWrapper = document.createElement('div');
-            messageWrapper.classList.add('message-wrapper');
-            
-            const messageContainer = document.createElement('div');
-            messageContainer.classList.add(sender === 'user' ? 'user-message-container' : 'ai-message-container');
-            
-            // Create sender label if needed (optional)
-            if (sender === 'ai') {
-                const senderLabel = document.createElement('div');
-                senderLabel.classList.add('message-sender');
-                senderLabel.textContent = 'AINOR';
-                messageContainer.appendChild(senderLabel);
-            }
-            
-            // Create the message bubble
-            const message = document.createElement('div');
-            message.classList.add('message');
-            message.classList.add(sender === 'user' ? 'user-message' : 'ai-message');
-            message.innerHTML = parseFormatting(text);
-            
-            // Add timestamp
-            const time = document.createElement('div');
-            time.classList.add('message-time');
-            const now = new Date();
-            time.textContent = now.getHours().toString().padStart(2, '0') + ':' + 
-                              now.getMinutes().toString().padStart(2, '0');
-            
-            message.appendChild(time);
-            messageContainer.appendChild(message);
-            messageWrapper.appendChild(messageContainer);
-            
-            document.getElementById('chatContainer').appendChild(messageWrapper);
-            document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
-        }
 
         function executeCommand(command) {
             document.getElementById('command').value = command;
@@ -1561,5 +2308,28 @@ measurementId: "G-ZFNR03PDPM"
             });
         });
     </script>
+
+    <!-- Add these modal components right before the closing body tag -->
+    <div id="renameModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Rename conversation</h3>
+            <input type="text" id="newTitleInput" placeholder="New title">
+            <div class="modal-actions">
+                <button id="cancelRename" class="btn-secondary">Cancel</button>
+                <button id="confirmRename" class="btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="clearHistoryModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Clear chat history</h3>
+            <p>Are you sure you want to delete all conversations? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button id="cancelClear" class="btn-secondary">Cancel</button>
+                <button id="confirmClear" class="btn-danger">Delete all</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
