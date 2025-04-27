@@ -4,10 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AINOR</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" rel="stylesheet" />
-   
-   <style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --sidebar-bg: #f7f7f8;
+            --primary-text: #202123;
+            --secondary-text: #6e6e80;
+            --border-color: #e5e5e5;
+            --accent-color: #10a37f;
+            --user-msg-bg: #f7f7f8;
+            --ai-msg-bg: #ffffff;
+            --input-bg: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+            --hover-color: #f0f0f0;
+            --button-text: #ffffff;
+            --container-width: 48rem;
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+        }
+
+        .dark-mode {
+            --bg-color: #1e1e2f;
+            --sidebar-bg: #0f0f1a;
+            --primary-text: #ececf1;
+            --secondary-text: #c5c5d2;
+            --border-color: #2a2a3a;
+            --accent-color: #10a37f;
+            --user-msg-bg: #2a2a3a;
+            --ai-msg-bg: #1e1e2f;
+            --input-bg: #2a2a3a;
+            --shadow-color: rgba(0, 0, 0, 0.2);
+            --hover-color: #2a2a3a;
+        }
 
         * {
             box-sizing: border-box;
@@ -16,437 +47,1067 @@
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #0D0D0D, #1A1A1A);
-            color: #ECECEC;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-text);
+            line-height: 1.5;
+            transition: background-color 0.3s, color 0.3s;
             height: 100vh;
             overflow: hidden;
         }
 
+        /* Welcome Screen */
         #initialWindow {
-            text-align: center;
-            padding: 40px;
-            border-radius: 12px;
-            background: linear-gradient(145deg, #1F1F1F, #2A2A2A);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 400px;
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        #initialWindow h1 {
-            margin-bottom: 10px;
-            font-size: 2em;
-            color: #FFD700;
-        }
-
-        #initialWindow h2 {
-            margin-top: 0;
-            font-size: 1.5em;
-            color: #FFD700;
-        }
-
-        #initialWindow p {
-            margin-bottom: 20px;
-            font-size: 1.1em;
-        }
-
-        #initialCommand {
-            width: calc(100% - 22px);
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            background-color: #333;
-            color: #ECECEC;
-            font-size: 1em;
-        }
-
-        #initialSubmit {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            background: linear-gradient(145deg, #FFD700, #FFC107);
-            color: #1A1A1A;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background 0.3s ease;
-        }
-
-        #initialSubmit:hover {
-            background: linear-gradient(145deg, #FFC107, #FFD700);
-        }
-
-        #appContainer {
             display: flex;
-            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             height: 100vh;
-            background-color: #1A1A1A;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            padding: 2rem;
+            max-width: 32rem;
+            margin: 0 auto;
             animation: fadeIn 0.5s ease-out;
         }
 
+        #initialWindow h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-text);
+        }
+
+        #initialWindow h2 {
+            font-size: 1.75rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        #initialWindow p {
+            color: var(--secondary-text);
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+        }
+
+        #initialCommand {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--input-bg);
+            color: var(--primary-text);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: border 0.3s;
+        }
+
+        #initialCommand:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        #initialSubmit {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--accent-color);
+            color: var(--button-text);
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+        }
+
+        #initialSubmit:hover {
+            background-color: #0d8c6a;
+        }
+
+        /* Main Chat Interface */
+        #appContainer {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        /* Sidebar */
         #sidebar {
             display: flex;
             flex-direction: column;
-            padding: 20px;
-            background-color: #2A2A2A;
-            width: 250px;
-            color: #ECECEC;
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 1rem;
+            transition: all 0.3s;
+        }
+
+        #sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
         }
 
         #sidebar h2 {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .new-chat-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-color);
+            color: var(--primary-text);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            transition: background-color 0.2s;
+            width: 100%;
+        }
+
+        .new-chat-btn:hover {
+            background-color: var(--hover-color);
         }
 
         .quick-command {
-            margin-top: 15px;
-            padding: 12px;
-            background-color: #333;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1.1rem;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            color: var(--primary-text);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-bottom: 0.5rem;
         }
 
         .quick-command:hover {
-            background-color: #3D8DFF;
+            background-color: var(--hover-color);
         }
 
+        .quick-command i {
+            color: var(--secondary-text);
+            font-size: 1rem;
+            width: 1.25rem;
+        }
+
+        #theme-toggle {
+            margin-top: auto;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--primary-text);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #theme-toggle:hover {
+            background-color: var(--hover-color);
+        }
+
+        /* Main Content */
         #mainContent {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            height: 100%;
+            max-width: calc(100% - 260px);
+            position: relative;
         }
 
+        /* Chat Container - Updated for WhatsApp style */
         .chat-container {
             flex-grow: 1;
-            padding: 20px;
             overflow-y: auto;
+            padding: 1rem;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            scrollbar-width: thin;
-            scrollbar-color: #3D8DFF #2A2A2A;
+            scroll-behavior: smooth;
+            background-color: var(--bg-color);
         }
 
-        .chat-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .chat-container::-webkit-scrollbar-thumb {
-            background-color: #3D8DFF;
-            border-radius: 4px;
+        /* Message styling for WhatsApp look */
+        .message-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.3s ease-out;
         }
 
         .message {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 15px;
-            font-size: 1rem;
+            max-width: 70%;
+            padding: 0.8rem 1rem;
+            border-radius: var(--radius-lg);
+            font-size: 0.95rem;
             line-height: 1.5;
-            word-wrap: break-word;
-        }
-
-        .user {
-            align-self: flex-end;
-            background-color: #3D8DFF;
-            color: #FFF;
-            border-top-right-radius: 0;
-        }
-
-        .ai {
-            align-self: flex-start;
-            background-color: #2A2A2A;
-            color: #ECECEC;
-            border-top-left-radius: 0;
-        }
-
-        .input-container {
-            display: flex;
-            padding: 15px;
-            background-color: #282828;
-            border-top: 1px solid #333;
-            gap: 10px;
-            align-items: center;
             position: relative;
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px var(--shadow-color);
+            white-space: normal;
+            overflow-wrap: break-word;
+            hyphens: auto;
+        }
+
+        .user-message-container {
+            align-self: flex-end;
+        }
+
+        .ai-message-container {
+            align-self: flex-start;
+        }
+
+        .user-message {
+            background-color: #dcf8c6; /* WhatsApp green */
+            color: #303030;
+            border-top-right-radius: 0.2rem;
+            margin-left: auto;
+        }
+
+        .ai-message {
+            background-color: white;
+            color: #303030;
+            border-top-left-radius: 0.2rem;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #8c8c8c;
+            text-align: right;
+            margin-top: 0.3rem;
+            display: inline-block;
+        }
+
+        .message-sender {
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            color: var(--accent-color);
+        }
+
+        /* Code blocks inside messages */
+        .message pre {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .message pre code {
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            color: #303030;
+            white-space: pre;
+            width: 100%;
+        }
+
+        .message pre button {
+            position: absolute;
+            top: 0.3rem;
+            right: 0.3rem;
+            padding: 0.2rem 0.4rem;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: var(--secondary-text);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        /* Message tail indicators */
+        .user-message::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -8px;
+            width: 0;
+            height: 0;
+            border: 8px solid transparent;
+            border-left-color: #dcf8c6;
+            border-right: 0;
+            border-top: 0;
+        }
+
+        .ai-message::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -8px;
+            width: 0;
+            height: 0;
+            border: 8px solid transparent;
+            border-right-color: white;
+            border-left: 0;
+            border-top: 0;
+        }
+
+        /* Dark mode adjustments */
+        .dark-mode .user-message {
+            background-color: #056162; /* Dark green for dark mode */
+            color: #f1f1f2;
+        }
+
+        .dark-mode .ai-message {
+            background-color: #202c33;
+            color: #f1f1f2;
+        }
+
+        .dark-mode .user-message::after {
+            border-left-color: #056162;
+        }
+
+        .dark-mode .ai-message::after {
+            border-right-color: #202c33;
+        }
+
+        .dark-mode .message pre {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        .dark-mode .message pre code {
+            color: #e0e0e0;
+        }
+
+        .dark-mode .message pre button {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Input Container */
+        .input-container {
+            padding: 1.5rem;
+            max-width: var(--container-width);
+            margin: 0 auto 1rem;
+            width: 100%;
+            position: relative;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            background-color: var(--input-bg);
+            padding: 0.75rem 1rem;
+            box-shadow: 0 2px 6px var(--shadow-color);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--accent-color);
+            box-shadow: 0 2px 8px var(--shadow-color);
         }
 
         #command {
             flex-grow: 1;
-            padding: 12px;
             border: none;
-            border-radius: 5px;
-            background-color: #333;
-            color: #ECECEC;
             outline: none;
+            background: transparent;
+            color: var(--primary-text);
+            font-family: 'Inter', sans-serif;
             font-size: 1rem;
+            line-height: 1.5;
+            resize: none;
+            padding-right: 2.5rem;
+            max-height: 200px;
         }
 
         #submit {
-            padding: 12px;
-            background-color: #3D8DFF;
-            color: #FFF;
+            position: absolute;
+            right: 0.75rem;
+            bottom: 0.75rem;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent-color);
+            color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 50%;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background-color 0.2s, transform 0.1s;
         }
 
         #submit:hover {
-            background-color: #1D6FE5;
+            background-color: #0d8c6a;
         }
 
-        /* Mobile View Adjustments */
+        #submit:active {
+            transform: scale(0.95);
+        }
+
+        .input-info {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--secondary-text);
+            margin-top: 0.5rem;
+        }
+
+        /* Mobile */
         @media (max-width: 768px) {
-            #appContainer {
-                flex-direction: column;
-                height: 100vh;
+            :root {
+                --container-width: 100%;
             }
 
             #sidebar {
-                display: none;
+                position: fixed;
+                left: -260px;
+                height: 100%;
+                z-index: 100;
+                box-shadow: 5px 0 15px var(--shadow-color);
             }
 
-            /* Branding on Mobile */
-            #mobileHeader {
+            #sidebar.active {
+                left: 0;
+            }
+
+            #mainContent {
+                max-width: 100%;
+            }
+
+            .mobile-toggle {
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 10;
+                background-color: var(--sidebar-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 50%;
+                width: 2.5rem;
+                height: 2.5rem;
                 display: flex;
-                justify-content: center;
                 align-items: center;
-                padding: 10px;
-                background-color: #2A2A2A;
-                font-size: 1.5rem;
-                color: #ECECEC;
+                justify-content: center;
+                cursor: pointer;
+                box-shadow: 0 2px 5px var(--shadow-color);
+            }
+
+            .message {
+                padding-left: 0;
             }
 
             .input-container {
-                gap: 5px;
-            }
-
-            #command {
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-
-            #submit {
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-
-            /* Quick Commands Icon */
-            #quickCommandsIcon {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                background-color: #3D8DFF;
-                color: #FFF;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                cursor: pointer;
-            }
-
-            #quickCommandsDropdown {
-                display: none;
-                position: absolute;
-                bottom: 60px;
-                right: 10px;
-                background-color: #2A2A2A;
-                border-radius: 8px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-                padding: 10px;
-            }
-
-            .quick-command-mobile {
-                margin: 5px 0;
-                padding: 8px;
-                background-color: #333;
-                border-radius: 5px;
-                cursor: pointer;
-                text-align: center;
-                color: #ECECEC;
-                font-size: 0.9rem;
-            }
-
-            .quick-command-mobile:hover {
-                background-color: #3D8DFF;
+                padding: 1rem;
             }
         }
 
-        /* Chatbot iframe style */
-        .chatbot-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            border-radius: 8px;
-            background-color: #1A1A1A;
-            color: #ECECEC;
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 99;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .message-wrapper {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* Add these improved mobile styles to your existing CSS */
+        @media (max-width: 768px) {
+            :root {
+                --container-width: 100%;
+            }
+
+            /* Welcome screen mobile */
+            #initialWindow {
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+
+            #initialWindow h1 {
+                font-size: 2rem;
+            }
+
+            #initialWindow h2 {
+                font-size: 1.5rem;
+            }
+
+            /* Sidebar mobile behavior */
+            #sidebar {
+                position: fixed;
+                left: -280px;
+                width: 280px;
+                height: 100%;
+                z-index: 100;
+                box-shadow: 5px 0 15px var(--shadow-color);
+                transition: left 0.3s ease;
+            }
+
+            #sidebar.active {
+                left: 0;
+            }
+
+            #mainContent {
+                max-width: 100%;
+                width: 100%;
+                padding-top: 3.5rem; /* Space for header */
+            }
+
+            /* Custom mobile header */
+            .mobile-header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3.5rem;
+                background-color: var(--bg-color);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 5;
+                border-bottom: 1px solid var(--border-color);
+                padding: 0 1rem;
+            }
+
+            .mobile-header h2 {
+                color: var(--accent-color);
+                font-size: 1.25rem;
+            }
+
+            /* Improved toggle button position */
+            .mobile-toggle {
+                position: fixed;
+                top: 0.75rem;
+                left: 0.75rem;
+                z-index: 10;
+                background-color: transparent;
+                border: none;
+                border-radius: 50%;
+                width: 2rem;
+                height: 2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                color: var(--primary-text);
+            }
+
+            /* Wider messages on mobile */
+            .message {
+                max-width: 85%;
+                font-size: 1rem;
+                padding: 0.8rem 1rem;
+            }
+
+            /* Better input container for mobile */
+            .input-container {
+                padding: 0.75rem;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: var(--bg-color);
+                border-top: 1px solid var(--border-color);
+            }
+
+            .input-wrapper {
+                max-width: 100%;
+            }
+
+            /* Adjust chat container to accommodate fixed input */
+            .chat-container {
+                padding: 0.5rem 0.75rem 5rem 0.75rem; /* Extra padding at bottom for fixed input */
+            }
+
+            /* Make buttons more tappable */
+            #submit {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+
+            .quick-command {
+                padding: 0.875rem 1rem;
+            }
+
+            /* Fix code blocks on mobile */
+            .message pre {
+                max-width: 100%;
+                overflow-x: auto;
+            }
+
+            .message pre button {
+                padding: 0.35rem 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            /* Fix message tails on mobile */
+            .user-message::after,
+            .ai-message::after {
+                border-width: 6px; /* Smaller tails on mobile */
+            }
+            
+            .user-message::after {
+                right: -6px;
+            }
+            
+            .ai-message::after {
+                left: -6px;
+            }
+        }
+
+        /* Additional mobile fixes for smaller screens */
+        @media (max-width: 480px) {
+            .message {
+                max-width: 90%; /* Even wider messages on small screens */
+            }
+            
+            #initialWindow h1 {
+                font-size: 1.75rem;
+            }
+            
+            #initialWindow h2 {
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
+            }
+            
+            #initialWindow p {
+                font-size: 1rem;
+            }
+            
+            /* Prevent zoom on input focus on iOS */
+            input, textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Improved code block styling */
+        .message pre {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        .message pre code {
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            color: #303030;
+            white-space: pre;
+            width: 100%;
+        }
+
+        /* Dark mode code block improvements */
+        .dark-mode .message pre {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        .dark-mode .message pre code {
+            color: #e0e0e0;
+        }
+
+        .dark-mode .message pre button {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Adjust mobile code blocks */
+        @media (max-width: 768px) {
+            .message {
+                max-width: 85%;
+                font-size: 0.95rem;
+            }
+            
+            /* Make code blocks a bit smaller on mobile */
+            .message pre {
+                padding: 0.7rem;
+                margin: 0.5rem 0;
+                font-size: 0.75rem;
+                width: auto;
+            }
+            
+            /* Fix horizontal scrolling for code blocks on mobile */
+            .ai-message-container {
+                max-width: 90%;
+                width: 90%;
+            }
+            
+            .user-message-container {
+                max-width: 90%;
+                width: 90%;
+                margin-left: auto;
+            }
+            
+            /* Make sure code and pre tags don't overflow */
+            .ai-message, .user-message {
+                width: 100%;
+            }
+        }
+
+        /* Even smaller screens */
+        @media (max-width: 480px) {
+            .message {
+                max-width: 90%;
+            }
+            
+            .ai-message-container,
+            .user-message-container {
+                max-width: 100%;
+                width: 95%;
+            }
+        }
+
+        /* Add these rules to hide mobile elements in desktop view */
+        .mobile-header, .mobile-toggle {
+            display: none; /* Hide by default on desktop */
+        }
+
+        /* Then make them visible only on mobile devices */
+        @media (max-width: 768px) {
+            .mobile-header, .mobile-toggle {
+                display: flex; /* Show on mobile */
+            }
         }
     </style>
 </head>
 <body>
     <div id="initialWindow">
         <h2>AINOR</h2>
-        <h1>Welcome to AINOR</h1>
-        <p>Enter a command to start the conversation:</p>
-        <input type="text" id="initialCommand" placeholder="Enter your command">
-        <button id="initialSubmit">Start</button>
+        <h1>How can I help you today?</h1>
+        <p>Enter a command to start the conversation</p>
+        <input type="text" id="initialCommand" placeholder="Ask anything...">
+        <button id="initialSubmit">Start Chat</button>
     </div>
 
     <div id="appContainer" style="display: none;">
-        <!-- <div id="mobileHeader">AINOR</div> -->
+        <div class="overlay" id="overlay"></div>
+        
         <div id="sidebar">
-            <h2>AINOR</h2>
+            <div id="sidebar-header">
+                <h2>AINOR</h2>
+            </div>
+            
+            <button class="new-chat-btn">
+                <i class="fa-regular fa-plus"></i> New chat
+            </button>
+
             <div class="quick-command" onclick="executeCommand('Hello, AINOR!')">
-                <i class="fas fa-comment-dots"></i> Say Hello
+                <i class="fa-regular fa-message"></i>
+                <span>Say Hello</span>
             </div>
+            
             <div class="quick-command" onclick="executeCommand('Tell me a joke!')">
-                <i class="fas fa-laugh"></i> Tell a Joke
+                <i class="fa-regular fa-face-laugh"></i>
+                <span>Tell a Joke</span>
             </div>
-            <div class="quick-command" onclick="executeCommand('What’s the weather?')">
-                <i class="fas fa-cloud-sun"></i> Weather Update
+            
+            <div class="quick-command" onclick="executeCommand('What\'s the weather?')">
+                <i class="fa-regular fa-cloud-sun"></i>
+                <span>Weather Update</span>
             </div>
+            
+            <div id="theme-toggle">
+                <span>Dark mode</span>
+                <i class="fa-regular fa-moon"></i>
+            </div>
+        </div>
+
+        <div class="mobile-header" id="mobileHeader">
+            <h2>AINOR</h2>
+        </div>
+
+        <div class="mobile-toggle" id="mobileToggle">
+            <i class="fa-solid fa-bars"></i>
         </div>
 
         <div id="mainContent">
             <div class="chat-container" id="chatContainer"></div>
+            
             <div class="input-container">
-                <textarea id="command" placeholder="Type a message..." rows="3"></textarea>
-                <button id="submit"><i class="fas fa-paper-plane"></i></button>
+                <div class="input-wrapper">
+                    <textarea id="command" placeholder="Message AINOR..." rows="1"></textarea>
+                    <button id="submit"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+                <div class="input-info">AINOR can provide information and assistance</div>
             </div>
         </div>
     </div>
 
-
-
     <script>
-       function displayMessage(text, sender) {
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('message', sender === 'user' ? 'user' : 'ai');
-    messageElement.innerHTML = parseFormatting(text);
-    document.getElementById('chatContainer').appendChild(messageElement);
-    document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
-}
-
-function executeCommand(command) {
-    document.getElementById('command').value = command;
-    sendCommand();
-}
-
-document.getElementById('initialSubmit').addEventListener('click', () => {
-    const initialCommand = document.getElementById('initialCommand').value;
-    if (initialCommand.trim() !== '') {
-        document.getElementById('initialWindow').style.display = 'none';
-        document.getElementById('appContainer').style.display = 'flex';
-        displayMessage(initialCommand, 'user');
-        sendCommand(initialCommand);
-    }
-});
-
-document.getElementById('submit').addEventListener('click', () => {
-    const command = document.getElementById('command').value;
-    if (command.trim() !== '') {
-        displayMessage(command, 'user');
-        sendCommand(command);
-    }
-});
-
-async function sendCommand(command) {
-    try {
-        const response = await fetch('/process_command', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ command: command || document.getElementById('command').value })
+        // Auto-resize textarea
+        const textarea = document.getElementById('command');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight < 200) ? this.scrollHeight + 'px' : '200px';
         });
 
-        const data = await response.json();
-        displayMessage(data.response, 'ai');
-        document.getElementById('command').value = '';
-    } catch (error) {
-        console.error('Error:', error);
-        displayMessage("I'm having trouble reaching the server.", 'ai');
-    }
-}
+        // Dark mode toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = themeToggle.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.className = 'fa-regular fa-sun';
+            } else {
+                icon.className = 'fa-regular fa-moon';
+            }
+        });
 
-async function fetchData() {
-    try {
-        const response = await fetch('your-api-endpoint');
-        const data = await response.json();
-        const formattedResponse = parseFormatting(data.response);
-        displayMessage(formattedResponse, 'ai');
-        document.getElementById('command').value = '';
-    } catch (error) {
-        console.error('Error:', error);
-        displayMessage("I'm having trouble reaching the server.", 'ai');
-    }
-}
+        // Mobile sidebar toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
 
-function parseFormatting(text) {
-    // Escape HTML characters to prevent XSS
-    const escapeHtml = (unsafe) => {
-        return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    };
+        mobileToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+        });
 
-    // Parse and apply markdown formatting (bold, italic, underline, bullet points, code blocks, etc.)
-    let formattedText = text
-        .replace(/```(.*?)```/gs, (match, p1) => {
-            return `<pre><code>${escapeHtml(p1)}</code><button onclick="copyToClipboard(this)">Copy</button></pre>`;
-        }) // Code blocks
-        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')                  // Bold
-        .replace(/\*(.*?)\*/g, '<i>$1</i>')                      // Italic
-        .replace(/__(.*?)__/g, '<u>$1</u>')                      // Underline
-        .replace(/## (.*?)\n/g, '<h2>$1</h2>')                    // Headings (e.g., ## Heading)
-        .replace(/`(.*?)`/g, '<kbd>$1</kbd>');                    // Keyboard input (backtick formatting)
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.style.display = 'none';
+        });
 
-    // Handle bullet points
-    const bulletPoints = formattedText.split('\n').map(line => {
-        if (line.startsWith('* ')) {
-            return `<li>${line.substring(2)}</li>`;
+        // Display messages
+        function displayMessage(text, sender) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.classList.add('message-wrapper');
+            
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add(sender === 'user' ? 'user-message-container' : 'ai-message-container');
+            
+            // Create sender label if needed (optional)
+            if (sender === 'ai') {
+                const senderLabel = document.createElement('div');
+                senderLabel.classList.add('message-sender');
+                senderLabel.textContent = 'AINOR';
+                messageContainer.appendChild(senderLabel);
+            }
+            
+            // Create the message bubble
+            const message = document.createElement('div');
+            message.classList.add('message');
+            message.classList.add(sender === 'user' ? 'user-message' : 'ai-message');
+            message.innerHTML = parseFormatting(text);
+            
+            // Add timestamp
+            const time = document.createElement('div');
+            time.classList.add('message-time');
+            const now = new Date();
+            time.textContent = now.getHours().toString().padStart(2, '0') + ':' + 
+                              now.getMinutes().toString().padStart(2, '0');
+            
+            message.appendChild(time);
+            messageContainer.appendChild(message);
+            messageWrapper.appendChild(messageContainer);
+            
+            document.getElementById('chatContainer').appendChild(messageWrapper);
+            document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
         }
-        return line;
-    }).join('\n');
 
-    // Wrap bullet points in <ul> tags
-    if (bulletPoints.includes('<li>')) {
-        formattedText = `<ul>${bulletPoints}</ul>`;
-    }
+        function executeCommand(command) {
+            document.getElementById('command').value = command;
+            sendCommand();
+        }
 
-    return formattedText;
-}
+        document.getElementById('initialSubmit').addEventListener('click', () => {
+            const initialCommand = document.getElementById('initialCommand').value;
+            if (initialCommand.trim() !== '') {
+                document.getElementById('initialWindow').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'flex';
+                displayMessage(initialCommand, 'user');
+                sendCommand(initialCommand);
+            }
+        });
 
-function copyToClipboard(button) {
-    const codeBlock = button.previousElementSibling;
-    const textArea = document.createElement('textarea');
-    textArea.value = codeBlock.textContent;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
-    button.textContent = 'Copied!';
-    setTimeout(() => {
-        button.textContent = 'Copy';
-    }, 2000);
-}
+        document.getElementById('submit').addEventListener('click', () => {
+            sendCommand();
+        });
 
+        document.getElementById('command').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendCommand();
+            }
+        });
+
+        async function sendCommand(command) {
+            const commandText = command || document.getElementById('command').value;
+            if (commandText.trim() === '') return;
+            
+            if (!command) {
+                displayMessage(commandText, 'user');
+            }
+            
+            document.getElementById('command').value = '';
+            document.getElementById('command').style.height = 'auto';
+            
+            try {
+                const response = await fetch('/process_command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command: commandText })
+                });
+
+                const data = await response.json();
+                displayMessage(data.response, 'ai');
+            } catch (error) {
+                console.error('Error:', error);
+                displayMessage("I'm having trouble reaching the server.", 'ai');
+            }
+        }
+
+        function parseFormatting(text) {
+            // Escape HTML characters to prevent XSS
+            const escapeHtml = (unsafe) => {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            };
+
+            // Parse and apply markdown formatting
+            let formattedText = escapeHtml(text);
+            
+            // Code blocks - improved version
+            formattedText = formattedText.replace(/```(.*?)\n([\s\S]*?)```/gs, (match, lang, code) => {
+                // Add language class if specified
+                const langClass = lang.trim() ? ` class="language-${lang.trim()}"` : '';
+                return `<pre><code${langClass}>${code}</code><button onclick="copyToClipboard(this)">Copy code</button></pre>`;
+            });
+            
+            // Inline code blocks
+            formattedText = formattedText.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            // Bold, italic, underline
+            formattedText = formattedText
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/__(.*?)__/g, '<u>$1</u>')
+                .replace(/## (.*?)\n/g, '<h3>$1</h3>');
+
+            // Handle bullet points
+            const lines = formattedText.split('\n');
+            let inList = false;
+            
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].startsWith('* ')) {
+                    if (!inList) {
+                        lines[i] = '<ul><li>' + lines[i].substring(2) + '</li>';
+                        inList = true;
+                    } else {
+                        lines[i] = '<li>' + lines[i].substring(2) + '</li>';
+                    }
+                } else if (inList) {
+                    lines[i-1] += '</ul>';
+                    inList = false;
+                }
+            }
+            
+            if (inList) {
+                lines[lines.length-1] += '</ul>';
+            }
+            
+            return lines.join('\n');
+        }
+
+        function copyToClipboard(button) {
+            const codeBlock = button.previousElementSibling;
+            const textArea = document.createElement('textarea');
+            textArea.value = codeBlock.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = 'Copy code';
+            }, 2000);
+        }
+
+        // New chat button functionality
+        document.querySelector('.new-chat-btn').addEventListener('click', () => {
+            document.getElementById('chatContainer').innerHTML = '';
+        });
+
+        // Add these improvements to your existing script
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if mobile device
+            const isMobile = window.innerWidth <= 768;
+            
+            // Adjust for mobile virtual keyboard
+            const mobileInputAdjust = () => {
+                if (isMobile) {
+                    const chatContainer = document.getElementById('chatContainer');
+                    const inputHeight = document.querySelector('.input-container').offsetHeight;
+                    
+                    // Give extra space at bottom of chat container when keyboard appears
+                    document.getElementById('command').addEventListener('focus', () => {
+                        chatContainer.style.paddingBottom = (inputHeight + 20) + 'px';
+                        // Scroll to bottom after a short delay to ensure keyboard is open
+                        setTimeout(() => {
+                            chatContainer.scrollTop = chatContainer.scrollHeight;
+                        }, 300);
+                    });
+                    
+                    document.getElementById('command').addEventListener('blur', () => {
+                        chatContainer.style.paddingBottom = '5rem';
+                    });
+                }
+            };
+            
+            // Call the function to set up event listeners
+            mobileInputAdjust();
+            
+            // Fix for copy button on mobile - larger tap area
+            const makeTappable = () => {
+                document.addEventListener('click', function(e) {
+                    if (e.target.matches('.message pre button')) {
+                        // The existing copyToClipboard function will handle this
+                    }
+                });
+            };
+            
+            makeTappable();
+            
+            // Handle device orientation changes
+            window.addEventListener('orientationchange', function() {
+                setTimeout(() => {
+                    const chatContainer = document.getElementById('chatContainer');
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }, 200);
+            });
+        });
     </script>
 </body>
 </html>
