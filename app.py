@@ -1,9 +1,10 @@
 import os
 import requests
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 import logging
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)  # For session management
 
 # Initialize a list to store all responses (only in memory)
 all_responses = []
@@ -56,6 +57,21 @@ def log_response(prompt, response_text):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+# Add login route
+@app.route('/login')
+def login():
+    return render_template('Login.html')
+
+# Add this route to handle direct requests to /Login.html
+@app.route('/Login.html')
+def login_html():
+    return redirect(url_for('login'))
+
+# Optional: add logout route
+@app.route('/logout')
+def logout():
+    return redirect(url_for('login'))
 
 @app.route('/process_command', methods=['POST'])
 def process_command():

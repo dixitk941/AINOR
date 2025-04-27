@@ -389,6 +389,135 @@
             background-color: rgba(255, 255, 255, 0.15);
             color: rgba(255, 255, 255, 0.8);
         }
+        /* Add these styles to your existing CSS */
+
+/* User profile in sidebar */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+    margin-bottom: 1rem;
+}
+
+.user-profile .user-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+}
+
+.user-profile .user-info {
+    flex-grow: 1;
+}
+
+.user-profile .user-name {
+    font-weight: 500;
+    color: var(--primary-text);
+    font-size: 0.9rem;
+}
+
+.user-profile .user-email {
+    color: var(--secondary-text);
+    font-size: 0.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#logout-btn {
+    background: none;
+    border: none;
+    color: var(--secondary-text);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+#logout-btn:hover {
+    background-color: var(--hover-color);
+    color: var(--accent-color);
+}
+
+/* Chat history section */
+.chat-history-section {
+    margin-bottom: 1rem;
+}
+
+.chat-history-section h3 {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--secondary-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    margin-bottom: 0.5rem;
+    padding: 0 0.5rem;
+}
+
+.chat-history-list {
+    max-height: 40vh;
+    overflow-y: auto;
+}
+
+.chat-history-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-bottom: 0.25rem;
+}
+
+.chat-history-item:hover {
+    background-color: var(--hover-color);
+}
+
+.chat-history-item.active {
+    background-color: rgba(16, 163, 127, 0.1);
+}
+
+.chat-history-item i {
+    color: var(--secondary-text);
+    font-size: 0.9rem;
+}
+
+.chat-title {
+    flex-grow: 1;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--primary-text);
+}
+
+.chat-date {
+    font-size: 0.7rem;
+    color: var(--secondary-text);
+}
+
+/* Scrollbar styling for chat history */
+.chat-history-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chat-history-list::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+}
+
+.dark-mode .chat-history-item.active {
+    background-color: rgba(16, 163, 127, 0.2);
+}
 
         /* Input Container */
         .input-container {
@@ -861,7 +990,356 @@
         </div>
     </div>
 
+    <!-- Add these scripts right before your existing script tag -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
     <script>
+        // Add this code at the beginning of your existing script
+        // Firebase configuration - use the same config as in login.html
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYdeigPuvdKyVj0rG53IoUZHaVyawyVZY",
+
+authDomain: "genzconnect-f5082.firebaseapp.com",
+
+databaseURL: "https://genzconnect-f5082-default-rtdb.firebaseio.com",
+
+projectId: "genzconnect-f5082",
+
+storageBucket: "genzconnect-f5082.appspot.com",
+
+messagingSenderId: "761396074376",
+
+appId: "1:761396074376:web:ce2c9a3560a78194698c3d",
+
+measurementId: "G-ZFNR03PDPM"
+
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        let currentUser = null;
+        let currentChatId = null;
+        let userChats = [];
+
+        // Check authentication state
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                currentUser = user;
+                document.querySelector('#sidebar-header h2').innerHTML = `Hello, ${user.displayName || 'User'}`;
+                
+                // Load user's chat history
+                loadChatHistory();
+                
+                // Show user profile in sidebar
+                const userProfile = document.createElement('div');
+                userProfile.className = 'user-profile';
+                userProfile.innerHTML = `
+                    <div class="user-avatar">${getUserInitials(user)}</div>
+                    <div class="user-info">
+                        <div class="user-name">${user.displayName || 'User'}</div>
+                        <div class="user-email">${user.email}</div>
+                    </div>
+                    <button id="logout-btn"><i class="fa-solid fa-sign-out-alt"></i></button>
+                `;
+                
+                // Add logout functionality
+                document.getElementById('sidebar').appendChild(userProfile);
+                document.getElementById('logout-btn').addEventListener('click', () => {
+                    firebase.auth().signOut().then(() => {
+                        window.location.href = '/login';                    });
+                });
+            } else {
+                // User is not signed in, redirect to login
+                window.location.href = '/login';            }
+        });
+
+        // Get user initials for avatar
+        function getUserInitials(user) {
+            if (!user.displayName) return 'U';
+            
+            const nameParts = user.displayName.split(' ');
+            if (nameParts.length === 1) return nameParts[0].charAt(0).toUpperCase();
+            return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
+        }
+
+        // Load user's chat history from Firestore
+        async function loadChatHistory() {
+            if (!currentUser) return;
+
+            try {
+                const chatsSnapshot = await db.collection('chats')
+                    .where('userId', '==', currentUser.uid)
+                    .orderBy('updatedAt', 'desc')
+                    .get();
+                
+                // Clear chat history list
+                const chatHistoryList = document.getElementById('chat-history-list') || createChatHistoryList();
+                chatHistoryList.innerHTML = '';
+                userChats = [];
+                
+                if (chatsSnapshot.empty) {
+                    // Create a new chat if no chats exist
+                    createNewChat();
+                    return;
+                }
+                
+                // Add each chat to the list
+                chatsSnapshot.forEach(doc => {
+                    const chatData = doc.data();
+                    userChats.push({
+                        id: doc.id,
+                        title: chatData.title,
+                        updatedAt: chatData.updatedAt
+                    });
+                    
+                    const chatItem = document.createElement('div');
+                    chatItem.className = 'chat-history-item';
+                    chatItem.innerHTML = `
+                        <i class="fa-regular fa-comments"></i>
+                        <span class="chat-title">${chatData.title}</span>
+                        <span class="chat-date">${formatDate(chatData.updatedAt.toDate())}</span>
+                    `;
+                    
+                    chatItem.addEventListener('click', () => loadChat(doc.id));
+                    chatHistoryList.appendChild(chatItem);
+                });
+                
+                // Load the most recent chat
+                loadChat(userChats[0].id);
+                
+            } catch (error) {
+                console.error('Error loading chat history:', error);
+            }
+        }
+
+        // Create chat history section in sidebar
+        function createChatHistoryList() {
+            const chatHistorySection = document.createElement('div');
+            chatHistorySection.className = 'chat-history-section';
+            chatHistorySection.innerHTML = `
+                <h3>Chat History</h3>
+            `;
+            
+            const chatHistoryList = document.createElement('div');
+            chatHistoryList.id = 'chat-history-list';
+            chatHistoryList.className = 'chat-history-list';
+            
+            chatHistorySection.appendChild(chatHistoryList);
+            
+            // Insert after new chat button
+            const newChatBtn = document.querySelector('.new-chat-btn');
+            newChatBtn.parentNode.insertBefore(chatHistorySection, newChatBtn.nextSibling);
+            
+            return chatHistoryList;
+        }
+
+        // Format date for chat history
+        function formatDate(date) {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            if (date.toDateString() === today.toDateString()) {
+                return 'Today';
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                return 'Yesterday';
+            } else {
+                return date.toLocaleDateString();
+            }
+        }
+
+        // Load chat messages
+        async function loadChat(chatId) {
+            if (!currentUser) return;
+            
+            try {
+                currentChatId = chatId;
+                
+                // Highlight the selected chat
+                document.querySelectorAll('.chat-history-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.querySelector('.chat-title').textContent === userChats.find(chat => chat.id === chatId).title) {
+                        item.classList.add('active');
+                    }
+                });
+                
+                // Get chat messages
+                const chatDoc = await db.collection('chats').doc(chatId).get();
+                const chatData = chatDoc.data();
+                
+                // Update title of current chat session
+                document.querySelector('.mobile-header h2').textContent = chatData.title;
+                
+                // Clear chat container
+                const chatContainer = document.getElementById('chatContainer');
+                chatContainer.innerHTML = '';
+                
+                // Load messages
+                const messagesSnapshot = await db.collection('chats').doc(chatId)
+                    .collection('messages')
+                    .orderBy('timestamp', 'asc')
+                    .get();
+                
+                messagesSnapshot.forEach(doc => {
+                    const messageData = doc.data();
+                    displayMessage(messageData.content, messageData.sender, messageData.timestamp.toDate());
+                });
+                
+                // Scroll to bottom
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                
+            } catch (error) {
+                console.error('Error loading chat:', error);
+            }
+        }
+
+        // Create a new chat
+        async function createNewChat() {
+            if (!currentUser) return;
+            
+            try {
+                // Create new chat document
+                const newChatRef = await db.collection('chats').add({
+                    userId: currentUser.uid,
+                    title: 'New Conversation',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Update UI and set as current chat
+                loadChatHistory();
+                currentChatId = newChatRef.id;
+                
+            } catch (error) {
+                console.error('Error creating new chat:', error);
+            }
+        }
+
+        // Updated displayMessage function that incorporates timestamps
+        function displayMessage(text, sender, timestamp = new Date()) {
+            // Existing display message code
+            const messageWrapper = document.createElement('div');
+            messageWrapper.classList.add('message-wrapper');
+            
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add(sender === 'user' ? 'user-message-container' : 'ai-message-container');
+            
+            // Create sender label if needed (optional)
+            if (sender === 'ai') {
+                const senderLabel = document.createElement('div');
+                senderLabel.classList.add('message-sender');
+                senderLabel.textContent = 'AINOR';
+                messageContainer.appendChild(senderLabel);
+            }
+            
+            // Create the message bubble
+            const message = document.createElement('div');
+            message.classList.add('message');
+            message.classList.add(sender === 'user' ? 'user-message' : 'ai-message');
+            message.innerHTML = parseFormatting(text);
+            
+            // Add timestamp
+            const time = document.createElement('div');
+            time.classList.add('message-time');
+            time.textContent = timestamp.getHours().toString().padStart(2, '0') + ':' + 
+                              timestamp.getMinutes().toString().padStart(2, '0');
+            
+            message.appendChild(time);
+            messageContainer.appendChild(message);
+            messageWrapper.appendChild(messageContainer);
+            
+            document.getElementById('chatContainer').appendChild(messageWrapper);
+            document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
+        }
+
+        // Update the sendCommand function to save messages to Firebase
+        async function sendCommand(command) {
+            const commandText = command || document.getElementById('command').value;
+            if (commandText.trim() === '') return;
+            
+            if (!command) {
+                displayMessage(commandText, 'user');
+            }
+            
+            document.getElementById('command').value = '';
+            document.getElementById('command').style.height = 'auto';
+            
+            // Create new chat if needed
+            if (!currentChatId) {
+                await createNewChat();
+            }
+            
+            try {
+                // Save user message to Firestore
+                await saveMessage(commandText, 'user');
+                
+                // Process command on the server
+                const response = await fetch('/process_command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command: commandText })
+                });
+
+                const data = await response.json();
+                
+                // Display and save AI response
+                displayMessage(data.response, 'ai');
+                await saveMessage(data.response, 'ai');
+                
+                // Update chat title if it's the first message
+                const chatDoc = await db.collection('chats').doc(currentChatId).get();
+                if (chatDoc.data().title === 'New Conversation') {
+                    // Generate title from the first message (limited to 30 chars)
+                    let title = commandText.length > 30 ? commandText.substring(0, 30) + '...' : commandText;
+                    await db.collection('chats').doc(currentChatId).update({
+                        title: title,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    // Refresh chat history to show new title
+                    loadChatHistory();
+                } else {
+                    // Just update the timestamp
+                    await db.collection('chats').doc(currentChatId).update({
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                displayMessage("I'm having trouble reaching the server.", 'ai');
+                
+                // Save error message
+                await saveMessage("I'm having trouble reaching the server.", 'ai');
+            }
+        }
+
+        // Save message to Firestore
+        async function saveMessage(content, sender) {
+            if (!currentUser || !currentChatId) return;
+            
+            try {
+                await db.collection('chats').doc(currentChatId)
+                    .collection('messages').add({
+                        content: content,
+                        sender: sender,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+            } catch (error) {
+                console.error('Error saving message:', error);
+            }
+        }
+
+        // Update new chat button handler
+        document.querySelector('.new-chat-btn').addEventListener('click', () => {
+            document.getElementById('chatContainer').innerHTML = '';
+            createNewChat();
+        });
+
         // Auto-resize textarea
         const textarea = document.getElementById('command');
         textarea.addEventListener('input', function() {
@@ -958,32 +1436,6 @@
                 sendCommand();
             }
         });
-
-        async function sendCommand(command) {
-            const commandText = command || document.getElementById('command').value;
-            if (commandText.trim() === '') return;
-            
-            if (!command) {
-                displayMessage(commandText, 'user');
-            }
-            
-            document.getElementById('command').value = '';
-            document.getElementById('command').style.height = 'auto';
-            
-            try {
-                const response = await fetch('/process_command', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ command: commandText })
-                });
-
-                const data = await response.json();
-                displayMessage(data.response, 'ai');
-            } catch (error) {
-                console.error('Error:', error);
-                displayMessage("I'm having trouble reaching the server.", 'ai');
-            }
-        }
 
         function parseFormatting(text) {
             // Escape HTML characters to prevent XSS
